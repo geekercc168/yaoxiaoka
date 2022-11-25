@@ -1,0 +1,129 @@
+{include file='common/header' /} 
+<body style='background: white;margin: 10px 10px 10px 10px; '> 
+<h1>
+	<span style='line-height: 40px;margin-left: 10px;'></span> 
+	<a href="/admin/article/message_list" >
+		<button class="layui-btn layui-btn-primary layui-btn-sm">新闻列表</button>
+	</a>
+</h1>
+<!-- 功能栏 -->
+<form class="layui-form" id='form1' style='float: left;'>
+	<div class="demoTable" style='margin-left: 10px;'>
+		<div class="layui-inline">
+			<input type="text" name="uid"  id='uid' lay-verify="required" placeholder="搜索用户id" autocomplete="off" class="layui-input" >
+		</div>
+		<div class="layui-inline">
+			<input type="text" name="search_name"  id='search_name' lay-verify="required" placeholder="搜索内容" autocomplete="off" class="layui-input" >
+		</div>
+	</div>
+</form>
+<button class='search layui-btn'>搜索</button>
+
+<div style='clear:both'></div>
+
+<table class="layui-hide" id="LAY_table_user" lay-filter="LAY_table_user"></table>
+
+<script type="text/html" id="caozuo">
+<!-- 这里的 checked 的状态只是演示 -->
+<a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="edit">编辑</a>
+<a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="del">删除</a>
+</script>
+<!-- 注意：如果你直接复制所有代码到本地，上述js路径需要改成你本地的 -->
+<script type="text/html" id="change">
+	{{# if (d.status == 1) { }}
+	<span>1</span>
+	{{# } else if (d.type == 2){ }}
+	<span>2</span>
+	{{# } else { }}
+	<span>3</span>
+	{{# } }}
+</script>
+<script type="text/html" id="status">
+	{{# if (d.status == 1) { }}
+	<span style="color: rgb(0, 128, 0);">已查看</span>
+	{{# } else { }}
+	<span>未查看</span>
+	{{# } }}
+</script>
+<script type="text/html" id="on_time">
+	{{layui.util.toDateString(d.on_time*1000, 'yyyy-MM-dd HH:mm:ss')}}
+</script>
+<script>
+
+layui.use(['table','form'], function(){
+  var table = layui.table,form = layui.form;
+  
+  //方法级渲染
+  table.render({
+    elem: '#LAY_table_user'
+    ,url: "/admin/article/message_list"
+    ,cols: [[
+      // {checkbox: true, fixed: true}
+      {field:'id', title: 'ID',width:100,  unresize: true}
+      ,{field:'uid', width:100,title: '用户ID',unresize: true }
+      ,{field:'content', title: '内容',unresize: true,templet: function (d) {
+				  return '<div style="text-align: left !important;">'+d.content+'</div>';
+			  } }
+	 ,{field:'status', width:120,title: '是否查看',unresize: true ,templet: '#status'}
+      ,{field:'on_time',width:180, title: '发布时间',unresize: true ,sort: true,templet: '#on_time'}
+      ,{field:'', width:180, title: '操作',unresize: true,templet: '#caozuo' }
+    ]]
+    ,id: 'testReload'
+    ,page: true
+    ,limit: 20
+	  , done: function (res) {
+		  tdTitle();
+	  }
+  })
+	$('.search').on('click', function(){
+		//执行重载
+		table.reload('testReload', {
+			page: {
+				curr: 1 //重新从第 1 页开始
+			}
+			,where: {
+				search_name:$('#search_name').val(),
+				uid:$('#uid').val(),
+
+			}
+		});
+	});
+  	//监听删除编辑操作
+    table.on('tool(LAY_table_user)', function(obj){
+        var data = obj.data; //获得当前行数据
+        var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
+        var tr = obj.tr; //获得当前行 tr 的DOM对象
+        if(layEvent === 'edit'){ //编辑
+            var id = data.id;
+			layer.open({
+				type: 2,
+				title:'编辑',
+				shadeClose: true,
+				area: ['80%', '80%'],
+				shade: 0.8,
+				content: '/admin/article/add_message?id='+id,
+			});
+        }
+		if(layEvent === 'del'){
+			var id = data.id;
+				layer.confirm('您确定删除吗？', {
+					btn: ['确定','取消'] //按钮
+				}, function(index){
+					$.post( "/admin/Article/message_del",{id:id},function(data){
+						if(data.code == 1){
+							layer.msg(data.msg, {icon: 1});
+							obj.del();
+						}else{
+                            layer.msg(data.msg, {icon: 5});
+						}
+					},'json')
+					layer.close(index);
+				}, function(){
+				});
+		}
+    });
+});
+</script>
+
+</body>
+</html>

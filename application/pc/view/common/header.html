@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="baidu-site-verification" content="{:GetRedis('jaja_keywords')}" />
+    <meta name="sogou_site_verification" content="{:GetRedis('jaja_keywords')}"/>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html;
+charset=gb2312"/>
+        <meta name="sogou_site_verification" content="{:GetRedis('jaja_keywords')}"/>
+    </head>
+    <title>{:GetRedis('jaja_title')}</title>
+    <meta name="description" content="{:GetRedis('jaja_desc')}">
+    <meta name="keywords" content="{:GetRedis('jaja_keywords')}">
+</head>
+
+
+<link rel="stylesheet" type="text/css" href="/public/pc/css/iconfont.css?v=20211" />
+<link rel="stylesheet" type="text/css" href="/public/pc/css/datouwang.css?v=20211" />
+
+<!-- 引入组件库 -->
+<script src="/public/pc/js/jquery-3.4.1.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="/public/pc/js/encryption.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="/public/pc/js/public.js?v=20211" type="text/javascript" charset="utf-8"></script>
+<script src="/public/layer/layer.js?v=20211" type="text/javascript" charset="utf-8"></script>
+
+<body>
+<div id="floatTools" class="rides-cs" style="height:286px;background: none;">
+    <!--<div class="fix_right" style="height: 311px;top: 393px">-->
+
+    <!--    <div class="fix_right_kf">-->
+    <!--        <i class="iconfont icon-kefu"></i>联系客服-->
+    <!--    </div>-->
+    <!--    <div class="fix_right_api fix_right_ewm">-->
+    <!--        <i class="iconfont icon-api"></i>API接口-->
+    <!--    </div>-->
+        
+    <!--</div>-->
+  
+    <div id="divFloatToolsView" class="floatR" style="display: none;height:267px;width: 100%;overflow: unset;">
+        <div class="cn" style="margin-left: -238px;position: absolute;width: 167px;margin-top: -19px;height: 128px;">
+            <!-- <h3 class="titZx">在线客服</h3> -->
+            <ul>
+                <li>
+                    <span>售前客服</span>
+                    <a target="_blank" href="http://wpa.qq.com/msgrd?v=3&amp;uin=1828847938&amp;site=qq&amp;menu=yes"><img border="0" src="/public/pc/images/online.png" alt="点击这里给我发消息" title="点击这里给我发消息"></a>
+                </li>
+                <li>
+                    <span>售后客服</span>
+                    <a target="_blank" href="http://wpa.qq.com/msgrd?v=3&amp;uin=1828847938&amp;site=qq&amp;menu=yes"><img border="0" src="/public/pc/images/online.png" alt="点击这里给我发消息" title="点击这里给我发消息"></a>
+                </li>
+                <li>
+                    <span>商务客服</span>
+                    <a target="_blank" href="http://wpa.qq.com/msgrd?v=3&amp;uin=1828847938&amp;site=qq&amp;menu=yes"><img border="0" src="/public/pc/images/online.png" alt="点击这里给我发消息" title="点击这里给我发消息"></a>
+                </li>
+
+            </ul>
+        </div>
+    </div>
+    
+</div>
+<script type="text/javascript">
+ 
+    $(function(){
+        $(".fix_right").click(function(){
+            $('#divFloatToolsView').toggle();
+            $('#aFloatTools_Hide').show();
+        });
+    });
+    
+    var pos = function (event) {  //鼠标定位赋值函数
+        var posX = 0, posY = 0;  //临时变量值
+        var e = event || window.event;  //标准化事件对象
+        if (e.pageX || e.pageY) {  //获取鼠标指针的当前坐标值
+            posX = e.pageX;
+            posY = e.pageY;
+        } else if (e.clientX || e.clientY) {
+            posX = event.clientX + document.documentElement.scrollLeft + document.body.scrollLeft;
+            posY = event.clientY + document.documentElement.scrollTop + document.body.scrollTop;
+        }
+        sessionStorage.setItem("cookieLogin", posX.toString()+posY.toString());
+        var d = new Date();
+        sessionStorage.setItem("passTime", d.getTime());
+       
+    }
+
+    // var div1 = document.getElementById("div1");
+    document.onmousemove = function () {
+        pos();
+    }
+    
+    function saveCookie(){
+        let _cookieLogin = sessionStorage.getItem("cookieLogin");
+        
+        let _passTime = sessionStorage.getItem("passTime");
+
+        let _d = new Date();
+        let _now = _d.getTime();
+        var _uuid = "{$_SESSION['think']['uid']}";
+
+        let _time = parseInt(_now) - parseInt(_passTime);
+        console.log(_time)
+        if(_time >= 30*1000*60){
+            $.get('/pc/index/onlineCount',{uid:_uuid},function(res){
+                console.log(res);
+            },'json')
+        }else{
+            $.get('/pc/index/onlineCount',{uid:_uuid,redis_time:'yxk'},function(res){
+                console.log(res);
+            },'json');
+        }
+        
+    }
+    var _uuid = "{$_SESSION['think']['uid']}";
+    if(_uuid > 0 ){
+       setInterval(saveCookie, 10000); 
+    }
+    
+</script>
+</body>
+</html>

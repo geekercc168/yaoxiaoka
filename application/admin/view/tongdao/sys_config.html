@@ -1,0 +1,581 @@
+{include file='common/header' /}
+<style>
+    .layui-form-item>label{
+        width: 120px;
+    }
+    .zdcx>li{
+        margin: 10px;
+    }
+    .zdcx>li>a{
+        color: blue !important;
+    }
+</style>
+<div class = 'outermost'>
+<div class="layui-card-header" style='border-bottom: none;'>
+        <fieldset class="layui-elem-field layui-field-title" style="    margin-top: -7px;">
+            <legend >通道配置</legend>
+        </fieldset>
+    </div>
+<form class="layui-form" action="">
+    <div class="layui-form-item">
+        <label class="layui-form-label">通道排队限制数:</label>
+        <div class="layui-input-inline" >
+            <input type="type" name="order_count" id='order_count' value="{$item.order_count}" lay-verify="required" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">闲卖移动利润:</label>
+        {foreach $item.xm_mobile as $v}
+        <div class="layui-input-inline" style="width: 100px;">
+            <input type="text" name="xm_mobile[]"  value="{$v}" lay-verify="required" autocomplete="off" class="layui-input">
+        </div>
+        {/foreach}
+        (对应面额分别为100,50,30,20,峰值)
+        <div class="layui-input-inline" style="width: 100px;">
+            <input type="text" name="xm_mobile_limit" value="{$item.xm_mobile_limit}"  class="layui-input">
+        </div>
+    </div>
+   
+    <div class="layui-form-item">
+        <label class="layui-form-label">闲卖联通利润:</label>
+        {foreach $item.xm_unicom as $v}
+        <div class="layui-input-inline" style="width: 100px;">
+            <input type="text" name="xm_unicom[]"  value="{$v}" lay-verify="required" autocomplete="off" class="layui-input">
+        </div>
+        {/foreach}
+        (对应面额分别为100,50,30,20,峰值)
+
+        <div class="layui-input-inline" style="width: 100px;">
+            <input type="text" name="xm_unicom_limit"  value="{$item.xm_unicom_limit}"  class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">闲卖电信利润:</label>
+        {foreach $item.xm_telecom as $v}
+        <div class="layui-input-inline" style="width: 100px;">
+            <input type="text" name="xm_telecom[]"  value="{$v}" lay-verify="required" autocomplete="off" class="layui-input">
+        </div>
+        {/foreach}
+        (对应面额分别为100,50,30,20,峰值)
+        <div class="layui-input-inline" style="width: 100px;">
+            <input type="text" name="xm_telecom_limit"  value="{$item.xm_telecom_limit}"  class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">速销卡移动利润:</label>
+        <div class="layui-input-inline" style="width: 100px;" >
+            <input type="text" name="sxk_mobile" id='sxk_mobile' value="{$item.sxk_mobile}" lay-verify="required" autocomplete="off" class="layui-input">
+        </div>
+        <div class="layui-input-inline" style="width: 100px;">
+            <input type="text" name="sxk_mobile_limit"  value="{$item.sxk_mobile_limit}"  class="layui-input">
+        </div>
+        (利润,峰值)
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">速销卡联通利润:</label>
+        <div class="layui-input-inline" style="width: 100px;" >
+            <input type="text" name="sxk_unicom" id='sxk_unicom' value="{$item.sxk_unicom}" lay-verify="required" autocomplete="off" class="layui-input">
+        </div>
+        <div class="layui-input-inline" style="width: 100px;">
+            <input type="text" name="sxk_unicom_limit"  value="{$item.sxk_unicom_limit}"  class="layui-input">
+        </div>
+        (利润,峰值)
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">速销卡电信利润:</label>
+        <div class="layui-input-inline"  style="width: 100px;">
+            <input type="text" name="sxk_telecom" id='sxk_telecom' value="{$item.sxk_telecom}" lay-verify="required" autocomplete="off" class="layui-input">
+        </div>
+        <div class="layui-input-inline" style="width: 100px;">
+            <input type="text" name="sxk_telecom_limit"  value="{$item.sxk_telecom_limit}"  class="layui-input">
+        </div>
+        (利润,峰值)
+    </div>
+    <div class="layui-form-item">
+        <div class="layui-container"> 
+            <div class="layui-row">
+                <div class="layui-col-md12">
+                    <table class="layui-table">
+                        <thead>
+                            <tr>
+                                <th>卡种</th>
+                                <th>面值</th>
+                                <th>时间范围(分钟)如：5-8</th>
+                                <th>折扣范围(超快销)如：90-95</th>
+                                <th>状态</th>
+                            </tr> 
+                        </thead>
+                        <tbody>
+                            <!-- 联通(慢销) -->
+                                <tr>
+                                    <td rowspan="4">联通(慢销)</td>
+                                    <td>20</td>
+                                    <td>
+                                        <input type="text" name="ltmx_20"  value="{:cache('ltmx_20')}"  class="layui-input">
+                                    </td>
+                                    <td rowspan="4">--</td>
+                                    <td>
+                                        <input type="checkbox" name="ltmxSt_20" lay-skin="switch" lay-text="开启|关闭" lay-filter="switchTest" value="1" {if(cache('ltmxSt_20') == 1)}checked{/if}>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>30</td>
+                                    <td>
+                                        <input type="text" name="ltmx_30"  value="{:cache('ltmx_30')}"  class="layui-input">
+                                    </td>
+                                    <td>
+                                        <input type="checkbox" name="ltmxSt_30" lay-skin="switch" lay-text="开启|关闭" lay-filter="switchTest" value="1" {if(cache('ltmxSt_30') == 1)}checked{/if}>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>50</td>
+                                    <td>
+                                        <input type="text" name="ltmx_50"  value="{:cache('ltmx_50')}"  class="layui-input">
+                                    </td>
+                                    <td>
+                                        <input type="checkbox" name="ltmxSt_50" lay-skin="switch" lay-text="开启|关闭" lay-filter="switchTest" value="1" {if(cache('ltmxSt_50') == 1)}checked{/if}>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>100</td>
+                                    <td>
+                                        <input type="text" name="ltmx_100"  value="{:cache('ltmx_100')}"  class="layui-input">
+                                    </td>
+                                    <td>
+                                        <input type="checkbox" name="ltmxSt_100" lay-skin="switch" lay-text="开启|关闭" lay-filter="switchTest" value="1" {if(cache('ltmxSt_100') == 1)}checked{/if}>
+                                    </td>
+                                </tr>
+                            <!-- 联通(慢销) -->
+
+                            <!-- 联通(快销) -->
+                                <tr>
+                                    <td rowspan="4">联通(快销)</td>
+                                    <td>20</td>
+                                    <td>
+                                        <input type="text" name="ltkx_20"  value="{:cache('ltkx_20')}"  class="layui-input">
+                                    </td>
+                                    <td rowspan="4">--</td>
+                                    <td>
+                                        <input type="checkbox" name="ltkxSt_20" lay-skin="switch" lay-text="开启|关闭" lay-filter="switchTest" value="1" {if(cache('ltkxSt_20') == 1)}checked{/if}>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>30</td>
+                                    <td>
+                                        <input type="text" name="ltkx_30"  value="{:cache('ltkx_30')}"  class="layui-input">
+                                    </td>
+                                    <td>
+                                        <input type="checkbox" name="ltkxSt_30" lay-skin="switch" lay-text="开启|关闭" lay-filter="switchTest" value="1" {if(cache('ltkxSt_30') == 1)}checked{/if}>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>50</td>
+                                    <td>
+                                        <input type="text" name="ltkx_50"  value="{:cache('ltkx_50')}"  class="layui-input">
+                                    </td>
+                                    <td>
+                                        <input type="checkbox" name="ltkxSt_50" lay-skin="switch" lay-text="开启|关闭" lay-filter="switchTest" value="1" {if(cache('ltkxSt_50') == 1)}checked{/if}>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>100</td>
+                                    <td>
+                                        <input type="text" name="ltkx_100"  value="{:cache('ltkx_100')}"  class="layui-input">
+                                    </td>
+                                    <td>
+                                        <input type="checkbox" name="ltkxSt_100" lay-skin="switch" lay-text="开启|关闭" lay-filter="switchTest" value="1" {if(cache('ltkxSt_100') == 1)}checked{/if}>
+                                    </td>
+                                </tr>
+                            <!-- 联通(快销) -->
+
+                            <!-- 联通(超快销) -->
+                                <tr>
+                                    <td rowspan="4">联通(超快销)</td>
+                                    <td>20</td>
+                                    <td>
+                                        <input type="text" name="ltckx_20"  value="{:cache('ltckx_20')}"  class="layui-input">
+                                    </td>
+                                    <td>
+                                        <input type="text" name="ltckxCk_20"  value="{:cache('ltckxCk_20')}"  class="layui-input">
+                                    </td>
+                                    <td>
+                                        <input type="checkbox" name="ltckxSt_20" lay-skin="switch" lay-text="开启|关闭" lay-filter="switchTest" value="1" {if(cache('ltckxSt_20') == 1)}checked{/if}>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>30</td>
+                                    <td>
+                                        <input type="text" name="ltckx_30"  value="{:cache('ltckx_30')}"  class="layui-input">
+                                    </td>
+                                    <td>
+                                        <input type="text" name="ltckxCk_30"  value="{:cache('ltckxCk_30')}"  class="layui-input">
+                                    </td>
+                                    <td>
+                                        <input type="checkbox" name="ltckxSt_30" lay-skin="switch" lay-text="开启|关闭" lay-filter="switchTest" value="1" {if(cache('ltckxSt_30') == 1)}checked{/if}>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>50</td>
+                                    <td>
+                                        <input type="text" name="ltckx_50"  value="{:cache('ltckx_50')}"  class="layui-input">
+                                    </td>
+                                    <td>
+                                        <input type="text" name="ltckxCk_50"  value="{:cache('ltckxCk_50')}"  class="layui-input">
+                                    </td>
+                                    <td>
+                                        <input type="checkbox" name="ltckxSt_50" lay-skin="switch" lay-text="开启|关闭" lay-filter="switchTest" value="1" {if(cache('ltckxSt_50') == 1)}checked{/if}>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>100</td>
+                                    <td>
+                                        <input type="text" name="ltckx_100"  value="{:cache('ltckx_100')}"  class="layui-input">
+                                    </td>
+                                    <td>
+                                        <input type="text" name="ltckxCk_100"  value="{:cache('ltckxCk_100')}"  class="layui-input">
+                                    </td>
+                                    <td>
+                                        <input type="checkbox" name="ltckxSt_100" lay-skin="switch" lay-text="开启|关闭" lay-filter="switchTest" value="1" {if(cache('ltckxSt_100') == 1)}checked{/if}>
+                                    </td>
+                                </tr>
+                            <!-- 联通(快销) -->
+
+                            <!-- 移动(慢销) -->
+                                <tr>
+                                    <td rowspan="4">移动(慢销)</td>
+                                    <td>20</td>
+                                    <td>
+                                        <input type="text" name="ydmx_20"  value="{:cache('ydmx_20')}"  class="layui-input">
+                                    </td>
+                                    <td rowspan="4">--</td>
+                                    <td>
+                                        <input type="checkbox" name="ydmxSt_20" lay-skin="switch" lay-text="开启|关闭" lay-filter="switchTest" value="1" {if(cache('ydmxSt_20') == 1)}checked{/if}>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>30</td>
+                                    <td>
+                                        <input type="text" name="ydmx_30"  value="{:cache('ydmx_30')}"  class="layui-input">
+                                    </td>
+                                    <td>
+                                        <input type="checkbox" name="ydmxSt_30" lay-skin="switch" lay-text="开启|关闭" lay-filter="switchTest" value="1" {if(cache('ydmxSt_30') == 1)}checked{/if}>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>50</td>
+                                    <td>
+                                        <input type="text" name="ydmx_50"  value="{:cache('ydmx_50')}"  class="layui-input">
+                                    </td>
+                                    <td>
+                                        <input type="checkbox" name="ydmxSt_50" lay-skin="switch" lay-text="开启|关闭" lay-filter="switchTest" value="1" {if(cache('ydmxSt_50') == 1)}checked{/if}>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>100</td>
+                                    <td>
+                                        <input type="text" name="ydmx_100"  value="{:cache('ydmx_100')}"  class="layui-input">
+                                    </td>
+                                    <td>
+                                        <input type="checkbox" name="ydmxSt_100" lay-skin="switch" lay-text="开启|关闭" lay-filter="switchTest" value="1" {if(cache('ydmxSt_100') == 1)}checked{/if}>
+                                    </td>
+                                </tr>
+                            <!-- 移动(慢销) -->
+
+                            <!-- 移动(快销) -->
+                                <tr>
+                                    <td rowspan="4">移动(快销)</td>
+                                    <td>20</td>
+                                    <td>
+                                        <input type="text" name="ydkx_20"  value="{:cache('ydkx_20')}"  class="layui-input">
+                                    </td>
+                                    <td rowspan="4">--</td>
+                                    <td>
+                                        <input type="checkbox" name="ydkxSt_20" lay-skin="switch" lay-text="开启|关闭" lay-filter="switchTest" value="1" {if(cache('ydkxSt_20') == 1)}checked{/if}>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>30</td>
+                                    <td>
+                                        <input type="text" name="ydkx_30"  value="{:cache('ydkx_30')}"  class="layui-input">
+                                    </td>
+                                    <td>
+                                        <input type="checkbox" name="ydkxSt_30" lay-skin="switch" lay-text="开启|关闭" lay-filter="switchTest" value="1" {if(cache('ydkxSt_30') == 1)}checked{/if}>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>50</td>
+                                    <td>
+                                        <input type="text" name="ydkx_50"  value="{:cache('ydkx_50')}"  class="layui-input">
+                                    </td>
+                                    <td>
+                                        <input type="checkbox" name="ydkxSt_50" lay-skin="switch" lay-text="开启|关闭" lay-filter="switchTest" value="1" {if(cache('ydkxSt_50') == 1)}checked{/if}>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>100</td>
+                                    <td>
+                                        <input type="text" name="ydkx_100"  value="{:cache('ydkx_100')}"  class="layui-input">
+                                    </td>
+                                    <td>
+                                        <input type="checkbox" name="ydkxSt_100" lay-skin="switch" lay-text="开启|关闭" lay-filter="switchTest" value="1" {if(cache('ydkxSt_100') == 1)}checked{/if}>
+                                    </td>
+                                </tr>
+                            <!-- 移动(快销) -->
+
+                            <!-- 移动(超快销) -->
+                                <tr>
+                                    <td rowspan="4">移动(超快销)</td>
+                                    <td>20</td>
+                                    <td>
+                                        <input type="text" name="ydckx_20"  value="{:cache('ydckx_20')}"  class="layui-input">
+                                    </td>
+                                    <td>
+                                        <input type="text" name="ydckxCk_20"  value="{:cache('ydckxCk_20')}"  class="layui-input">
+                                    </td>
+                                    <td>
+                                        <input type="checkbox" name="ydckxSt_20" lay-skin="switch" lay-text="开启|关闭" lay-filter="switchTest" value="1" {if(cache('ydckxSt_20') == 1)}checked{/if}>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>30</td>
+                                    <td>
+                                        <input type="text" name="ydckx_30"  value="{:cache('ydckx_30')}"  class="layui-input">
+                                    </td>
+                                    <td>
+                                        <input type="text" name="ydckxCk_30"  value="{:cache('ydckxCk_30')}"  class="layui-input">
+                                    </td>
+                                    <td>
+                                        <input type="checkbox" name="ydckxSt_30" lay-skin="switch" lay-text="开启|关闭" lay-filter="switchTest" value="1" {if(cache('ydckxSt_30') == 1)}checked{/if}>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>50</td>
+                                    <td>
+                                        <input type="text" name="ydckx_50"  value="{:cache('ydckx_50')}"  class="layui-input">
+                                    </td>
+                                    <td>
+                                        <input type="text" name="ydckxCk_50"  value="{:cache('ydckxCk_50')}"  class="layui-input">
+                                    </td>
+                                    <td>
+                                        <input type="checkbox" name="ydckxSt_50" lay-skin="switch" lay-text="开启|关闭" lay-filter="switchTest" value="1" {if(cache('ydckxSt_50') == 1)}checked{/if}>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>100</td>
+                                    <td>
+                                        <input type="text" name="ydckx_100"  value="{:cache('ydckx_100')}"  class="layui-input">
+                                    </td>
+                                    <td>
+                                        <input type="text" name="ydckxCk_100"  value="{:cache('ydckxCk_100')}"  class="layui-input">
+                                    </td>
+                                    <td>
+                                        <input type="checkbox" name="ydckxSt_100" lay-skin="switch" lay-text="开启|关闭" lay-filter="switchTest" value="1" {if(cache('ydckxSt_100') == 1)}checked{/if}>
+                                    </td>
+                                </tr>
+                            <!-- 移动(快销) -->
+
+                            <!-- 电信(慢销) -->
+                                <tr>
+                                    <td rowspan="4">电信(慢销)</td>
+                                    <td>20</td>
+                                    <td>
+                                        <input type="text" name="dxmx_20"  value="{:cache('dxmx_20')}"  class="layui-input">
+                                    </td>
+                                    <td rowspan="4">--</td>
+                                    <td>
+                                        <input type="checkbox" name="dxmxSt_20" lay-skin="switch" lay-text="开启|关闭" lay-filter="switchTest" value="1" {if(cache('dxmxSt_20') == 1)}checked{/if}>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>30</td>
+                                    <td>
+                                        <input type="text" name="dxmx_30"  value="{:cache('dxmx_30')}"  class="layui-input">
+                                    </td>
+                                    <td>
+                                        <input type="checkbox" name="dxmxSt_30" lay-skin="switch" lay-text="开启|关闭" lay-filter="switchTest" value="1" {if(cache('dxmxSt_30') == 1)}checked{/if}>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>50</td>
+                                    <td>
+                                        <input type="text" name="dxmx_50"  value="{:cache('dxmx_50')}"  class="layui-input">
+                                    </td>
+                                    <td>
+                                        <input type="checkbox" name="dxmxSt_50" lay-skin="switch" lay-text="开启|关闭" lay-filter="switchTest" value="1" {if(cache('dxmxSt_50') == 1)}checked{/if}>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>100</td>
+                                    <td>
+                                        <input type="text" name="dxmx_100"  value="{:cache('dxmx_100')}"  class="layui-input">
+                                    </td>
+                                    <td>
+                                        <input type="checkbox" name="dxmxSt_100" lay-skin="switch" lay-text="开启|关闭" lay-filter="switchTest" value="1" {if(cache('dxmxSt_100') == 1)}checked{/if}>
+                                    </td>
+                                </tr>
+                            <!-- 电信(慢销) -->
+
+                            <!-- 电信(快销) -->
+                                <tr>
+                                    <td rowspan="4">电信(快销)</td>
+                                    <td>20</td>
+                                    <td>
+                                        <input type="text" name="dxkx_20"  value="{:cache('dxkx_20')}"  class="layui-input">
+                                    </td>
+                                    <td rowspan="4">--</td>
+                                    <td>
+                                        <input type="checkbox" name="dxkxSt_20" lay-skin="switch" lay-text="开启|关闭" lay-filter="switchTest" value="1" {if(cache('dxkxSt_20') == 1)}checked{/if}>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>30</td>
+                                    <td>
+                                        <input type="text" name="dxkx_30"  value="{:cache('dxkx_30')}"  class="layui-input">
+                                    </td>
+                                    <td>
+                                        <input type="checkbox" name="dxkxSt_30" lay-skin="switch" lay-text="开启|关闭" lay-filter="switchTest" value="1" {if(cache('dxkxSt_30') == 1)}checked{/if}>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>50</td>
+                                    <td>
+                                        <input type="text" name="dxkx_50"  value="{:cache('dxkx_50')}"  class="layui-input">
+                                    </td>
+                                    <td>
+                                        <input type="checkbox" name="dxkxSt_50" lay-skin="switch" lay-text="开启|关闭" lay-filter="switchTest" value="1" {if(cache('dxkxSt_50') == 1)}checked{/if}>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>100</td>
+                                    <td>
+                                        <input type="text" name="dxkx_100"  value="{:cache('dxkx_100')}"  class="layui-input">
+                                    </td>
+                                    <td>
+                                        <input type="checkbox" name="dxkxSt_100" lay-skin="switch" lay-text="开启|关闭" lay-filter="switchTest" value="1" {if(cache('dxkxSt_100') == 1)}checked{/if}>
+                                    </td>
+                                </tr>
+                            <!-- 电信(快销) -->
+
+                            <!-- 电信(超快销) -->
+                                <tr>
+                                    <td rowspan="4">电信(超快销)</td>
+                                    <td>20</td>
+                                    <td>
+                                        <input type="text" name="dxckx_20"  value="{:cache('dxckx_20')}"  class="layui-input">
+                                    </td>
+                                    <td>
+                                        <input type="text" name="dxckxCk_20"  value="{:cache('dxckxCk_20')}"  class="layui-input">
+                                    </td>
+                                    <td>
+                                        <input type="checkbox" name="dxckxSt_20" lay-skin="switch" lay-text="开启|关闭" lay-filter="switchTest" value="1" {if(cache('dxckxSt_20') == 1)}checked{/if}>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>30</td>
+                                    <td>
+                                        <input type="text" name="dxckx_30"  value="{:cache('dxckx_30')}"  class="layui-input">
+                                    </td>
+                                    <td>
+                                        <input type="text" name="dxckxCk_30"  value="{:cache('dxckxCk_30')}"  class="layui-input">
+                                    </td>
+                                    <td>
+                                        <input type="checkbox" name="dxckxSt_30" lay-skin="switch" lay-text="开启|关闭" lay-filter="switchTest" value="1" {if(cache('dxckxSt_30') == 1)}checked{/if}>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>50</td>
+                                    <td>
+                                        <input type="text" name="dxckx_50"  value="{:cache('dxckx_50')}"  class="layui-input">
+                                    </td>
+                                    <td>
+                                        <input type="text" name="dxckxCk_50"  value="{:cache('dxckxCk_50')}"  class="layui-input">
+                                    </td>
+                                    <td>
+                                        <input type="checkbox" name="dxckxSt_50" lay-skin="switch" lay-text="开启|关闭" lay-filter="switchTest" value="1" {if(cache('dxckxSt_50') == 1)}checked{/if}>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>100</td>
+                                    <td>
+                                        <input type="text" name="dxckx_100"  value="{:cache('dxckx_100')}"  class="layui-input">
+                                    </td>
+                                    <td>
+                                        <input type="text" name="dxckxCk_100"  value="{:cache('dxckxCk_100')}"  class="layui-input">
+                                    </td>
+                                    <td>
+                                        <input type="checkbox" name="dxckxSt_100" lay-skin="switch" lay-text="开启|关闭" lay-filter="switchTest" value="1" {if(cache('dxckxSt_100') == 1)}checked{/if}>
+                                    </td>
+                                </tr>
+                            <!-- 电信(快销) -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <div class="layui-input-inline">
+          <button class="layui-btn" type='button' lay-submit lay-filter="formDemo">立即提交</button>
+          <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+        </div>
+
+    </div>
+</form>
+    <div class="zdcx">
+        <!-- <li><a href="/zdcx_hst" target="_blank" style="text-decoration:underline;">汇速通主动查询</a></li> -->
+        <li onclick="go_check('/zdcx_sxk','速销卡主动查询')"><a href="javascript:;" style="text-decoration:underline;">速销卡主动查询</a></li>
+        <!-- <li><a href="/zdcx_sup" target="_blank" style="text-decoration:underline;">sup(新讯银)主动查询</a></li> -->
+        <!-- <li><a href="/zdcx_xkl" target="_blank" style="text-decoration:underline;">销卡啦主动查询</a></li> -->
+        <li onclick="go_check('/zdcx_xm','闲卖主动查询')"><a href="javascript:;" style="text-decoration:underline;">闲卖主动查询</a></li>
+    </div>
+</div>
+
+
+<script>
+//Demo
+layui.use('form', function(){
+  var form = layui.form;
+
+  //监听提交
+    layui.use(['layer', 'form', 'table', 'upload'], function() {
+        var layer = layui.layer, form = layui.form, table = layui.table,upload = layui.upload;
+        form.on('submit(formDemo)', function (data) {
+            $.post("/admin/Tongdao/sys_config", $('.layui-form').serialize(), function (data) {
+                if (data.code == 1) {
+                    layer.msg(data.msg, {icon: 1,time:1500},function () {
+                            window.location.reload();
+                    });
+                } else {
+                    layer.msg(data.msg, {icon: 5});
+                }
+            }, 'json')
+            return false;
+        });
+    });
+    });
+    function go_check(url,title){
+
+        layer.open({
+            // type: 1,
+            title:[title, 'text-align:center'],
+            shadeClose: true,
+            area: ['50%', '300px'],
+            shade: 0.8,
+            content: '<div class="layui-form-item"><label class="layui-form-label" style="width: 80px;">订单号</label><div class="layui-input-block"><input type="text" name="orderid" placeholder="请输入订单号" autocomplete="off" class="layui-input"></div></div><div class="layui-form-item"><label class="layui-form-label" style="width: 80px;"></label><div class="layui-input-inline"><input style="display:none" type="text" name="check_result" lay-vertype="tips" autocomplete="off" class="layui-input"></div><div class="layui-form-mid layui-word-aux"></div></div><div class="layui-form-item"><div class="layui-input-block btn-check-now"><button class="layui-btn" lay-filter="formDemo" onclick=\'go_check_url("'+url+'")\'>立即提交</button></div></div>',
+            btn: ''
+        });
+        
+    }
+    
+    function go_check_url(url){
+        let orderid = $( "input[name='orderid']").val()
+        $.get(url, {'show':1,'orderid':orderid}, function(res){
+            if(res.code == 0){
+                $( "input[name='check_result']").css('display','block');
+                $( "input[name='check_result']").val(res.msg)  
+            }else{
+                layer.msg(res.msg);
+            }
+        });
+    }
+</script>

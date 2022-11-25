@@ -1,0 +1,228 @@
+{include file='common/headers' /}
+<style>
+    .layui-side-menu .layui-nav .layui-nav-item a{
+         padding-left: 5px;
+    }
+</style>
+<body class="layui-layout-body">
+
+<div id="LAY_app">
+    <div class="layui-layout layui-layout-admin">
+        <div class="layui-header">
+            <!-- 头部区域 -->
+            <ul class="layui-nav layui-layout-left">
+                <li class="layui-nav-item layadmin-flexible" lay-unselect>
+                    <a href="javascript:;" layadmin-event="flexible" title="侧边伸缩">
+                        <i class="layui-icon layui-icon-shrink-right" id="LAY_app_flexible"></i>
+                    </a>
+                </li>
+                <li class="layui-nav-item layui-hide-xs" lay-unselect>
+                    <a href="#" target="_blank" title="前台">
+                        <i class="layui-icon layui-icon-website"></i>
+                    </a>
+                </li>
+                <li class="layui-nav-item" lay-unselect>
+                    <a href="javascript:;" layadmin-event="refresh" title="刷新">
+                        <i class="layui-icon layui-icon-refresh-3"></i>
+                    </a>
+                </li>
+            </ul>
+            <ul class="layui-nav layui-layout-right" lay-filter="layadmin-layout-right">
+                <li class="layui-nav-item layui-hide-xs" lay-unselect>
+                    <a href="/" layadmin-event="fullscreen">
+                        首页
+                    </a>
+                </li>
+               
+                <li class="layui-nav-item layui-hide-xs" lay-unselect>
+                    <a href="javascript:;" layadmin-event="fullscreen"  onclick="card_rate_query()">
+                        平台费率
+                    </a>
+                </li>
+                <li class="layui-nav-item layui-hide-xs" lay-unselect>
+                    <a href="/yk_card" layadmin-event="fullscreen">
+                        我要销卡
+                    </a>
+                </li>
+                <li class="layui-nav-item layui-hide-xs" lay-unselect>
+                    <a href="/help/gzh" layadmin-event="fullscreen">
+                        公众号
+                    </a>
+                </li>
+                <li class="layui-nav-item layui-hide-xs" lay-unselect>
+                    <a href="#" id="favorites">收藏本站</a>
+                </li>
+                <!--  <li class="layui-nav-item" lay-unselect>
+                   <a lay-href="app/message/index.html" layadmin-event="message" lay-text="消息中心">
+                     <i class="layui-icon layui-icon-notice"></i>   -->
+
+                <!-- 如果有新消息，则显示小圆点 -->
+                <!-- <span class="layui-badge-dot"></span>
+              </a>
+            </li> -->
+                <li class="layui-nav-item layui-hide-xs" lay-unselect>
+                    <a href="javascript:;" layadmin-event="theme">
+                        <i class="layui-icon layui-icon-theme"></i>
+                    </a>
+                </li>
+                <!-- <li class="layui-nav-item layui-hide-xs" lay-unselect>
+                  <a href="javascript:;" layadmin-event="note">
+                    <i class="layui-icon layui-icon-note"></i>
+                  </a>
+                </li> -->
+                <li class="layui-nav-item layui-hide-xs" lay-unselect>
+                    <a href="javascript:;" layadmin-event="fullscreen">
+                        <i class="layui-icon layui-icon-screen-full"></i>
+                    </a>
+                </li>
+                <li class="layui-nav-item" lay-unselect style='margin-right: 30px;'>
+                    <a href="javascript:;">
+                        <cite>{$Think.session.uinfo.username}</cite>
+                    </a>
+                    <dl class="layui-nav-child">
+                        <!--                        <dd><a lay-href="/admin/admin/profile">基本资料</a></dd>-->
+                        <!--                        <dd><a lay-href="/admin/admin/password">修改密码</a></dd>-->
+                        <!--                        <hr>-->
+                        <dd style="text-align: center;"><a href="/sign/out">退出</a></dd>
+                    </dl>
+                </li>
+
+                <!-- <li class="layui-nav-item layui-hide-xs" lay-unselect> -->
+                <!-- <a href="javascript:;" layadmin-event="about"><i class="layui-icon layui-icon-more-vertical"></i></a> -->
+                <!-- </li> -->
+                <li class="layui-nav-item layui-show-xs-inline-block layui-hide-sm" lay-unselect>
+                    <a href="javascript:;" layadmin-event="more"><i class="layui-icon layui-icon-more-vertical"></i></a>
+                </li>
+            </ul>
+        </div>
+
+        <!-- 侧边菜单 -->
+        <div class="layui-side layui-side-menu">
+            <div class="layui-side-scroll">
+                <div class="layui-logo" lay-href="/pc/user/info">
+                    <span>用户管理后台</span>
+                </div>
+
+                <ul class="layui-nav layui-nav-tree" lay-shrink="all" id="LAY-system-side-menu" lay-filter="layadmin-system-side-menu">
+                    <li data-name="home" class="layui-nav-item layui-nav-itemed">
+                        <dd data-name="button">
+                            <i class="layui-icon layui-icon-home"></i>
+                            <a lay-href="/pc/user/info">控制台</a>
+                        </dd>
+                    </li>
+                    {volist name='list' id='vo'}
+                    <li data-name="component" class="layui-nav-item {if $vo.submenu_id=='1'}layui-nav-itemed{/if}">
+                        {if empty($vo.menu_name) }
+                        <a href="javascript:;" lay-tips="{$vo.submenu_name}" lay-direction="2">
+                            <i class="layui-icon {$vo.css}"></i>
+                            <cite>{$vo.submenu_name}</cite>
+                        </a>
+                        {volist name='vo.erji' id='voo'}
+                        <dl class="layui-nav-child">
+                            {if empty($voo.sanji)}
+                            <dd data-name="button">
+                                <a lay-href='/{$voo.resource_url}'>{$voo.resource_name}</a>
+                            </dd>
+                            {else/}
+                            <dd data-name="grid">
+                                <a href="javascript:;">{$voo.resource_name}</a>
+                                {volist name='voo.sanji' id='sanji'}
+                                <dl class="layui-nav-child">
+                                    <dd data-name="list"><a lay-href="'/{$sanji.resource_url}'">{$sanji.resource_name}</a></dd>
+                                </dl>
+                                {/volist}
+                            </dd>
+                            {/if}
+                        </dl>
+                        {/volist}
+                            {else /}
+                            <a lay-href="/{$vo.menu_name}" lay-tips="{$vo.menu_name}" lay-direction="1">
+                                <i class="layui-icon {$vo.css}"></i>
+                                <cite>{$vo.submenu_name}</cite>
+                            </a>
+                                {/if}
+
+
+
+                    </li>
+                    {/volist}
+                </ul>
+            </div>
+        </div>
+
+        <!-- 页面标签 -->
+        <div class="layadmin-pagetabs" id="LAY_app_tabs">
+            <div class="layui-icon layadmin-tabs-control layui-icon-prev" layadmin-event="leftPage"></div>
+            <div class="layui-icon layadmin-tabs-control layui-icon-next" layadmin-event="rightPage"></div>
+            <div class="layui-icon layadmin-tabs-control layui-icon-down">
+                <ul class="layui-nav layadmin-tabs-select" lay-filter="layadmin-pagetabs-nav">
+                    <li class="layui-nav-item" lay-unselect>
+                        <a href="javascript:;"></a>
+                        <dl class="layui-nav-child layui-anim-fadein">
+                            <dd layadmin-event="closeThisTabs"><a href="javascript:;">关闭当前标签页</a></dd>
+                            <dd layadmin-event="closeOtherTabs"><a href="javascript:;">关闭其它标签页</a></dd>
+                            <dd layadmin-event="closeAllTabs"><a href="javascript:;">关闭全部标签页</a></dd>
+                        </dl>
+                    </li>
+                </ul>
+            </div>
+            <div class="layui-tab" lay-unauto lay-allowClose="true" lay-filter="layadmin-layout-tabs">
+                <ul class="layui-tab-title" id="LAY_app_tabsheader">
+                    <li lay-id="/pc/user/info" lay-attr="/pc/user/info" class="layui-this"><i class="layui-icon layui-icon-home"></i></li>
+                </ul>
+            </div>
+        </div>
+
+
+        <!-- 主体内容 -->
+        <div class="layui-body" id="LAY_app_body">
+            <div class="layadmin-tabsbody-item layui-show">
+                <iframe src="/pc/user/info" frameborder="0" class="layadmin-iframe"></iframe>
+            </div>
+        </div>
+
+        <!-- 辅助元素，一般用于移动设备下遮罩 -->
+        <div class="layadmin-body-shade" layadmin-event="shade"></div>
+    </div>
+</div>
+
+
+<script>
+    layui.config({
+        base: '__PUBLIC__static/admin/layuiadmin/' //静态资源所在路径
+        ,version: "202009233"
+    }).extend({
+        index: 'lib/index' //主入口模块
+    }).use(['index','element'],function () {
+        var element=layui.element;
+        element.on('tab(layadmin-system-side-menu)', function(data){
+            console.log(data);
+        });
+        $(document).ready(function(){
+            $("#favorites").click(function(){
+                var ctrl=(navigator.userAgent.toLowerCase()).indexOf('mac')!=-1?'Command/Cmd': 'CTRL';
+                if(document.all){
+                    window.external.addFavorite('http://1xiaoka.com/','要销卡');
+                }
+                else if(window.sidebar){
+                    window.sidebar.addPanel('要销卡', 'http://1xiaoka.com/', "");
+                }
+                else{ alert('您可以通过快捷键' + ctrl + ' + D 加入到收藏夹');}
+            })
+
+
+        })
+    });
+    function card_rate_query() {
+        layer.open({
+            type: 2,
+            title:'平台费率',
+            shadeClose: true,
+            area: ['90%', '90%'],
+            shade: 0.8,
+            content: '/pc/help/card_rate_query',
+        });
+    }
+</script>
+</body>
+</html>

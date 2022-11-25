@@ -1,0 +1,71 @@
+{include file='common/headers' /}
+<style>
+	.layui-btn+.layui-btn{
+		margin-left: 0px;
+	}
+	.layui-btn-xs{
+		padding: 0 3px;
+	}
+	.layui-table-cell{
+		padding: 0 1px;
+	}
+</style>
+<body style='background: white;margin: 10px 10px 10px 10px; '>
+<div style='clear:both'></div>
+
+<table class="layui-hide" id="LAY_table_user" lay-filter="LAY_table_user"></table>
+<!-- 注意：如果你直接复制所有代码到本地，上述js路径需要改成你本地的 -->
+<script type="text/html" id="time1">
+	{{layui.util.toDateString(d.login_time*1000, 'yyyy-MM-dd HH:mm:ss')}}
+</script>
+<script type="text/html" id="time2">
+	{{layui.util.toDateString(d.last_login_time*1000, 'yyyy-MM-dd HH:mm:ss')}}
+</script>
+<script>
+
+layui.use(['table','form','laydate'], function(){
+  var table = layui.table,form = layui.form
+	var laydate = layui.laydate;
+	//日期范围
+	laydate.render({
+		elem: '#test1'
+		,range: true
+		,max: 0
+	});
+  //方法级渲染
+  table.render({
+    elem: '#LAY_table_user'
+    ,url: "/pc/user/login_log"
+    ,cols: [[
+      // {checkbox: true, fixed: true}
+      {field:'uid', title: '用户编号[昵称][姓名]',unresize: true,templet: "<div>{{d.uid}}{{d.username?'['+d.username+']':''}}{{d.truename?'['+d.truename+']':''}}</div>" }
+      ,{field:'ip', title: '登录ip',unresize: true }
+      ,{field:'address', title: '登录地址',unresize: true }
+      ,{field:'login_desc', title: '登录描述',unresize: true }
+      ,{field:'login_time', title: '登录时间',unresize: true ,sort: true,templet: '#time1'}
+    ]]
+    ,id: 'testReload'
+    ,page: true
+    ,limit: 20
+	  , done: function (res) {
+		  tdTitle();
+	  }
+  })
+	$('.search').on('click', function(){
+		//执行重载
+		table.reload('testReload', {
+			page: {
+				curr: 1 //重新从第 1 页开始
+			}
+			,where: {
+				search_time:$('#test1').val(),
+				uid:$('#uid').val(),
+				ip:$('#ip').val(),
+			}
+		});
+	});
+});
+</script>
+
+</body>
+</html>

@@ -1,0 +1,68 @@
+{include file='common/header' /}
+<link rel="stylesheet" href="__PUBLIC__/static/admin/kindeditor/themes/default/default.css"/>
+<script charset="utf-8" src="__PUBLIC__/static/admin/kindeditor/kindeditor.js"></script>
+<script charset="utf-8" src="__PUBLIC__/static/admin/kindeditor/lang/zh_CN.js"></script>
+<div class = 'outermost'>
+<form class="layui-form" action="">
+   
+    <div class="layui-form-item">
+        <label class="layui-form-label">银行卡</label>
+        <div class="layui-input-inline">
+            <input type="number" name="sxf_bank" placeholder="请输入手续费" autocomplete="off" class="layui-input" value="{$find['sxf_bank']}">
+        </div>
+        <div class="layui-form-mid layui-word-aux">单笔</div>
+    </div>
+
+    <div class="layui-form-item">
+        <label class="layui-form-label">支付宝</label>
+        <div class="layui-input-inline">
+            <input type="number" name="sxf_alipay" placeholder="请输入手续费" autocomplete="off" class="layui-input" value="{$find['sxf_alipay']}">
+        </div>
+        <div class="layui-form-mid layui-word-aux">单笔</div>
+    </div>
+    
+    <input type="hidden" name='id' id='id' value="{$uid}">
+    <div class="layui-form-item">
+        <div class="layui-input-block">
+            <button class="layui-btn" type='submit' lay-submit lay-filter="formDemo">立即提交</button>
+        </div>
+    </div>
+</form>
+</div>
+
+<script>
+    //Demo
+    layui.use('form', function () {
+        var form = layui.form;
+
+        //监听提交
+        layui.use(['layer', 'form', 'table'], function () {
+          
+            var layer = layui.layer, form = layui.form, table = layui.table;
+            //监听提交
+            form.on('submit(formDemo)', function (data) {
+                $.post("/admin/Member/tixian_sxf", $('.layui-form').serialize(), function (data) {
+                    if (data.code == 1) {
+                        var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+                        layer.msg(data.msg, {icon: 1});
+                        setTimeout(function () {
+                            parent.layer.close(index);
+                            //修改成功刷新父页面
+                            if ($('#id').val()) {
+                                window.parent.location.reload();
+                            } else {
+                                //添加页面直接返回上一页并刷新
+                                window.location.reload();
+                            }
+
+                        }, 1000); //再执行关闭
+
+                    } else {
+                        layer.msg(data.msg, {icon: 5});
+                    }
+                }, 'json')
+                return false;
+            });
+        });
+    });
+</script>

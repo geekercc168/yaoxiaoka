@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>layuiAdmin 控制台主页一</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <link rel="stylesheet" href="/public/static/admin/layuiadmin/layui/css/layui.css" media="all">
+    <link rel="stylesheet" href="/public/static/admin/layuiadmin/style/admin.css" media="all">
+    <script src="/public/home/js/jquery-1.8.2.min.js"></script>
+</head>
+<style>
+    .head {
+        color: #1E9FFF;
+        font-size: 38px;
+        text-indent: -6px;
+    }
+
+    .coin {
+        float: left;
+        width: 49.5%;
+    }
+
+    .vip {
+        width: 49.5%;
+        float: left;
+    }
+
+    .coin div:nth-child(1) {
+        color: black;
+        margin-top: 15px;
+        font-weight: bold;
+    }
+
+    .coin div:nth-child(2) {
+        font-weight: bold;
+        color: #1E9FFF;
+    }
+
+    .coin div:nth-child(n+3) {
+        line-height: 34px;
+    }
+
+    .coin div:nth-child(n+3) span {
+        color: #FF5722;
+    }
+
+    .vip div:nth-child(1) {
+        color: black;
+        margin-top: 15px;
+        font-weight: bold;
+    }
+
+    .vip div:nth-child(2) {
+        font-weight: bold;
+        color: #1E9FFF;
+    }
+
+    .vip div:nth-child(n+3) {
+        line-height: 34px;
+    }
+
+    .vip div:nth-child(n+3) span {
+        color: #FF5722;
+    }
+    .layui-table-cell{
+        height:45px;
+    }
+    .top{
+        height: 20px;
+    }
+</style>
+<body>
+<div class="layui-fluid">
+    <div class="layui-row layui-col-space15">
+        <div class="layui-col-md12">
+            <div class="layui-row layui-col-space15">
+                <div class="layui-col-md4">
+                    <div class="layui-card">
+                        <div class="layui-card-header">快捷方式</div>
+                        <div class="layui-card-body">
+
+                            <div class="layui-carousel layadmin-carousel layadmin-shortcut">
+                                <div carousel-item>
+                                    <ul class="layui-row layui-col-space10">
+                                        <li class="layui-col-xs3">
+                                            <a lay-href="/admin/sys/basic_set.html">
+                                                <i class="layui-icon layui-icon-set"></i>
+                                                <cite>基本设置</cite>
+                                            </a>
+                                        </li>
+                                        <li class="layui-col-xs3">
+                                            <a lay-href="/admin/news/album_list.html">
+                                                <i class="layui-icon layui-icon-read"></i>
+                                                <cite>小说列表</cite>
+                                            </a>
+                                        </li>
+                                        <li class="layui-col-xs3">
+                                            <a lay-href="/admin/cartoon/album_list.html">
+                                                <i class="layui-icon layui-icon-picture"></i>
+                                                <cite>漫画列表</cite>
+                                            </a>
+                                        </li>
+                                        <li class="layui-col-xs3">
+                                            <a lay-href="/admin/listen/album_list.html">
+                                                <i class="layui-icon layui-icon-headset"></i>
+                                                <cite>听书列表</cite>
+                                            </a>
+                                        </li>
+                                        <li class="layui-col-xs3">
+                                            <a lay-href="/admin/billboard/payment.html">
+                                                <i class="layui-icon layui-icon-rmb"></i>
+                                                <cite>充值列表</cite>
+                                            </a>
+                                        </li>
+                                        <li class="layui-col-xs3">
+                                            <a lay-href="/admin/member/member_list.html">
+                                                <i class="layui-icon layui-icon-user"></i>
+                                                <cite>会员列表</cite>
+                                            </a>
+                                        </li>
+                                        <li class="layui-col-xs3">
+                                            <a lay-href="/admin/agency/agency_list.html">
+                                                <i class="layui-icon layui-icon-diamond"></i>
+                                                <cite>代理列表</cite>
+                                            </a>
+                                        </li>
+                                        <li class="layui-col-xs3">
+                                            <a lay-href="/admin/news/cai_list.html">
+                                                <i class="layui-icon layui-icon-util"></i>
+                                                <cite>采集设置</cite>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-col-md2">
+                    <div class="layui-card" style="height: 250px;">
+                        <div class="layui-card-header">今日充值</div>
+                        <div class="layui-card-body layui-text">
+                            <div class="head">￥{$data.today.today_count}</div>
+                            <div class="coin">
+                                <div>普通充值</div>
+                                <div>{$data.today.today_coin}</div>
+                                <div>已支付：<span>{$data.today.today_coin_num}</span>笔</div>
+                                <div>未支付：<span>{$data.today.today_coin_num_error}</span>笔</div>
+                                <div>完成率：<span>{$data.today.coin_probablity}%</span></div>
+                            </div>
+                            <div class="vip">
+                                <div>年费VIP会员</div>
+                                <div>{$data.today.today_vip}</div>
+                                <div>已支付：<span>{$data.today.today_vip_num}</span>笔</div>
+                                <div>未支付：<span>{$data.today.today_vip_num_error}</span>笔</div>
+                                <div>完成率：<span>{$data.today.vip_probablity}%</span></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-col-md2">
+                    <div class="layui-card" style="height: 250px;">
+                        <div class="layui-card-header">昨日充值</div>
+                        <div class="layui-card-body layui-text">
+                            <div class="head">￥{$data.yesterday.yesterday_count}</div>
+                            <div class="coin">
+                                <div>普通充值</div>
+                                <div>{$data.yesterday.yesterday_coin}</div>
+                                <div>已支付：<span>{$data.yesterday.yesterday_coin_num}</span>笔</div>
+                                <div>未支付：<span>{$data.yesterday.yesterday_coin_num_error}</span>笔</div>
+                                <div>完成率：<span>{$data.yesterday.coin_probablity}%</span></div>
+                            </div>
+                            <div class="vip">
+                                <div>年费VIP会员</div>
+                                <div>{$data.yesterday.yesterday_vip}</div>
+                                <div>已支付：<span>{$data.yesterday.yesterday_vip_num}</span>笔</div>
+                                <div>未支付：<span>{$data.yesterday.yesterday_vip_num_error}</span>笔</div>
+                                <div>完成率：<span>{$data.yesterday.vip_probablity}%</span></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-col-md2">
+                    <div class="layui-card" style="height: 250px;">
+                        <div class="layui-card-header">本月充值</div>
+                        <div class="layui-card-body layui-text">
+                            <div class="head">￥{$data.month.month_count}</div>
+                            <div class="coin">
+                                <div>普通充值</div>
+                                <div>{$data.month.month_coin}</div>
+                                <div>已支付：<span>{$data.month.month_coin_num}</span>笔</div>
+                                <div>未支付：<span>{$data.month.month_coin_num_error}</span>笔</div>
+                                <div>完成率：<span>{$data.month.coin_probablity}%</span></div>
+                            </div>
+                            <div class="vip">
+                                <div>年费VIP会员</div>
+                                <div>{$data.month.month_vip}</div>
+                                <div>已支付：<span>{$data.month.month_vip_num}</span>笔</div>
+                                <div>未支付：<span>{$data.month.month_vip_num_error}</span>笔</div>
+                                <div>完成率：<span>{$data.month.vip_probablity}%</span></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-col-md2">
+                    <div class="layui-card" style="height: 250px;">
+                        <div class="layui-card-header">累计充值</div>
+                        <div class="layui-card-body layui-text">
+                            <div class="head">￥{$data.count.count_count}</div>
+                            <div class="coin">
+                                <div>普通充值</div>
+                                <div>{$data.count.count_coin}</div>
+                                <div>已支付：<span>{$data.count.count_coin_num}</span>笔</div>
+                                <div>未支付：<span>{$data.count.count_coin_num_error}</span>笔</div>
+                                <div>完成率：<span>{$data.count.coin_probablity}%</span></div>
+                            </div>
+                            <div class="vip">
+                                <div>年费VIP会员</div>
+                                <div>{$data.count.count_vip}</div>
+                                <div>已支付：<span>{$data.count.count_vip_num}</span>笔</div>
+                                <div>未支付：<span>{$data.count.count_vip_num_error}</span>笔</div>
+                                <div>完成率：<span>{$data.count.vip_probablity}%</span></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="layui-col-md12">
+                    <div class="info">
+                        <div class="layui-inline">
+                            <label class="layui-form-label">请选择范围</label>
+                            <div class="layui-input-inline">
+                                <input type="text" class="layui-input start" id="test16"
+                                       placeholder="开始日期 ~ 结束日期">
+                            </div>
+                        </div>
+                    </div>
+                    <table id="demo" lay-filter="test"></table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!--模版-->
+<script type="text/html" id="sum">
+    <div style="color:#1E9FFF;">
+        {{d.sum_money}}
+    </div>
+</script>
+<script type="text/html" id="one">
+    <div>
+        <div class="top" style="color:#1E9FFF;">￥{{d.coin_count}}</div>
+        <div>充值人数：<span style="color:#1E9FFF;">{{d.member_coin_count}}</span>人，人均：<span style="color:#1E9FFF;">￥{{d.probablity_coin}}</span></div>
+    </div>
+</script>
+<script type="text/html" id="two">
+    <div class="top"><span style="color:#FF5722;">{{d.count_coin_order}}</span>笔</div>
+    <div><span style="color:#FF5722;">{{d.count_coin_error_order}}</span>笔未支付，完成率：<sapn style="color:#FF5722;">{{d.count_coin_error_probablity}}%</sapn></div>
+</script>
+<script type="text/html" id="three">
+    <div class="top" style="color:#1E9FFF;">￥{{d.vip_count}}</div>
+    <div>充值人数：<span style="color:#1E9FFF;">{{d.member_vip_count}}</span>人，人均：<span style="color:#1E9FFF;">￥{{d.probablity_vip}}</span></div>
+</script>
+<script type="text/html" id="four">
+    <div class="top"><span style="color:#FF5722;">{{d.count_vip_order}}</span>笔</div>
+    <div><span style="color:#FF5722;">{{d.count_vip_error_order}}</span>笔未支付，完成率：<sapn style="color:#FF5722;">{{d.count_vip_error_probablity}}%</sapn></div>
+</script>
+<script src="__PUBLIC__static/admin/layuiadmin/layui/layui.js"></script>
+<script>
+    layui.config({
+        base: '__PUBLIC__static/admin/layuiadmin/' //静态资源所在路径
+    }).extend({
+        index: 'lib/index' //主入口模块
+    }).use(['index', 'console', 'table','laydate'], function () {
+        //第一个实例
+        var table = layui.table,
+        laydate = layui.laydate;
+        table.render({
+            elem: '#demo'
+            , url: "/admin/main/console" //数据接口
+            , page: true //开启分页
+            , cols: [[ //表头
+                {field: 'datetime', title: '日期', align: 'center',width:'16.5%'}
+                , {field: '', title: '总充值金额', align: 'center',width:'16.5%',templet: '#sum'}
+                , {field: 'coin_count', title: '普通充值金额', templet: '#one',width:'16.5%'}
+                , {field: 'count_coin_order', title: '普通充值订单数', templet: '#two',width:'16.5%'}
+                , {field: 'vip_count', title: 'VIP充值金额', templet: '#three',width:'16.5%'}
+                , {field: 'count_vip_order', title: 'VIP充值订单数', templet: '#four',width:'16.6%'}
+            ]]
+            , id:'test11'
+        });
+        laydate.render({
+            elem: '#test16'
+            ,type: 'date'
+            ,range: '~'
+            ,format: 'yyyy-MM-dd'
+            ,done: function(value, date){
+                $.post("/admin/main/ajax_console", {value:value}, function(data){
+
+                });
+                var value = value;
+
+                table.reload('test11', {
+                    page: {
+                        curr: 1 //重新从第 1 页开始
+                    }
+                    ,where: {
+                        value:value
+                    }
+                });
+            }
+        });
+
+    });
+
+</script>
+</body>
+</html>
+

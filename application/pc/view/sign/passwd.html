@@ -1,0 +1,174 @@
+{if $is_mobile==1}
+{include file="./common/mheader"}
+<div class="main_top">
+    忘记密码
+    <a href="javascript:history.back(-1);" class="back"><img src="/public/wap/img/left_icon.png" alt=""></a>
+    <a class="kf_right"><img src="/public/wap/img/kf_icon.png" alt=""></a>
+</div>
+{else}
+{include file="./common/header"}
+<link rel="stylesheet" type="text/css" href="/public/pc/css/login.css?v=20212"/>
+{include file="./common/nav"}
+{/if}
+<div class="container" {if $is_mobile==1} style="width: 1400px;" {if}>
+    <div class="user_ins"></div>
+    <div class="login_box">
+        <div class="login_box_head"><a class="active">重置密码</a></div>
+        <div class="login_form">
+            <form id="formId" action="/passwd/action" method="post">
+                <div class="login_form_input">
+                    <input type="text" name="username" value="" placeholder="请输入登录账户名" autocomplete="off" autofocus>
+                </div>
+                <div class="login_form_input">
+                    <input type="text" name="tel" value="" placeholder="请输入注册时填写的手机号" autofocus>
+                </div>
+                <div class="login_form_input">
+                    <input type="password" name="userpass" value="" placeholder="请输入新密码" autocomplete="new-password">
+                    <span class="pw_hide iconfont icon-browse"></span>
+                </div>
+                <div class="login_form_input">
+                    <input type="text" name="telcode" value="" placeholder="短信验证码" autocomplete="off">
+                    <a id="yzm_btn" class="yzm">获取验证码</a>
+                </div>
+                <button type="button" onclick="submitForm()" class="login_form_btn">立 即 重 置</button>
+            </form>
+        </div>
+    </div>
+</div>
+<div class="mask">
+    <!--  图形验证码弹窗  -->
+    <div class="modal edit_modal">
+        <div class="close"></div>
+        <div class="title_txt"><h3>请输入验证码</h3><p></p></div>
+        <div class="clear"></div>
+        <div class="add_input">
+            <input type="text" name="captcha" value="" placeholder="请输入验证码" autocomplete="off">
+            <span class="captcha">
+                <img height="40" onclick="this.src='/admin/index/verify'" src="/admin/index/verify" alt="验证码">
+            </span>
+        </div>
+        <button class="add_btn" onclick="getTelCode()">确 定</button>
+    </div>
+</div>
+<script src="/public/pc/js/register.js?v=2021" type="text/javascript" charset="utf-8"></script>
+{if $is_mobile!=1}
+{include file="./common/footer"}
+{/if}
+<script>
+    $(function () {
+        $('[name=username]').blur(function(){ checkUserName(); });
+        $('[name=tel]').blur(function () {checkTel();});
+        $('[name=userpass]').blur(function () {checkUserPass();});
+        $('[name=telcode]').blur(function () {checkTelCode();});
+        $('[name=captcha]').keydown(function(e){
+            var theEvent = e || window.event;
+            var code = theEvent.keyCode || theEvent.which || theEvent.charCode;
+            if (code == 13) {  getTelCode();  }
+        });
+        $('[name=telcode]').keydown(function(e){
+            var theEvent = e || window.event;
+            var code = theEvent.keyCode || theEvent.which || theEvent.charCode;
+            if (code == 13) {  submitForm();  }
+        });
+    });
+    var clickAble = true;
+    $('#yzm_btn').click(function() {
+        if(!clickAble) { return; }
+        if (!checkTel()) {
+            return;
+        }
+         $('#captcha').attr('src', '/admin/index/verify');
+         $('[name=captcha]').val('');
+         $('.mask').show();
+        setTimeout(function () {
+            $('.edit_modal').addClass('modal_show');
+        },100);
+    });
+
+
+
+    $('[for=agree]').click(function() { $(this).toggleClass('lab_on'); });
+    function submitForm() {
+        var isFormOk = checkUserName() & checkUserPass() & checkTelCode();
+        if (!isFormOk) {
+            return false;
+        }
+        $.post("/passwd",$('#formId').serialize(),function(data){
+            if(data.code==1){
+                // var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+                layer.msg(data.msg, {icon: 1});
+                setTimeout(function(){
+                    //修改成功刷新父页面
+                    window.location.href='/sign/in';
+                    // var gourl="{$Think.session.url}";
+                    // if(gourl){
+                    //     window.location.href=gourl;
+                    // }else{
+                    //     //添加页面直接返回上一页并刷新
+                    //     window.location.href='/sign/in';
+                    // }
+
+                },1000); //再执行关闭
+
+            }else{
+                layer.msg(data.msg, {icon: 5});
+            }
+        },'json');
+        return false;
+    }
+
+    /**
+     * 发送短信验证码
+     */
+    function getTelCode() {
+        if (!clickAble) {
+            return false;
+        } else {
+            var $tel = $('[name=tel]');
+            if ($tel.val() === '') {
+                layer.msg('请填写手机号');
+                return;
+            }
+            var $captcha = $('[name=captcha]');
+            if ($captcha.val() === '') {
+                layer.msg('请填写验证码');
+                return;
+            }
+            $('.mask').hide();
+            $('.modal').removeClass('modal_show');
+            clickAble = false;
+            var t = 100;
+            $('#yzm_btn').html('重新获取（' + t-- + 's）');
+            var inter = window.setInterval(function() {
+                $('#yzm_btn').html('重新获取（' + t + 's）');
+                $('#yzm_btn').attr('disabled', true);
+                t = t - 1;
+            }, 1000);
+            window.setTimeout(function () {
+                clickAble = true;
+                window.clearInterval(inter)
+                $('#yzm_btn').html('获取验证码');
+            }, 1000 * t);
+        }
+        $.post("/pc/sign/sms", { tel:$tel.val(),type:4, code: $captcha.val() }, function (ret) {
+            if (ret.code === 1) {
+                layer.msg(ret.msg,{coin:1});
+            } else {
+                layer.msg(ret.msg,{coin:5});
+                clickAble = true;
+                window.clearInterval(inter)
+                $('#yzm_btn').html('获取验证码');
+            }
+        },'json')
+    }
+    $('.close').click(function () {
+        $('.mask').hide();
+        $('.modal').removeClass('modal_show');
+    });
+    $('.close,.btn_right').click(function () {
+        $('.mask').hide();
+        $('.modal').removeClass('modal_show');
+        $('input[name=xieyi]').val("ok");
+        $('.agree_radio').toggleClass('active');
+    });
+</script>

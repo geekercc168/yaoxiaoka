@@ -1,0 +1,505 @@
+{include file="./common/header"}
+
+{if $au!=1}
+{include file="./common/nav"}
+{else}
+<link rel="stylesheet" type="text/css" href="/public/pc/css/base.css?v=20211" />
+{/if}
+
+
+<link rel="stylesheet" type="text/css" href="/public/pc/css/sell.css?v=20211"/>
+<style>
+    .choose_list li a>img {
+        vertical-align: middle;
+        margin: 0 13px;
+    }
+    .cardimg{
+        max-width: 50px;
+    }
+    .import_tips{
+        position: absolute;
+        right: 0;
+        width: 480px;
+        height: 280px;
+        background: rgba(0,0,0, 0.03);
+        border-bottom-right-radius: 8px;
+        text-align: center;
+        margin-top: 60px;
+    }
+    .import_tips>img{
+        margin: 30px 0 20px 0;
+    }
+    .import_tips>.p1{
+        font-size: 14px;
+        font-weight: 500;
+        line-height: 30px;
+        color: #ff6d5a;
+    }
+    .import_tips>.p2{
+        font-size: 14px;
+        line-height: 30px;
+        color: #767e91;
+    }
+    .lx_list li{
+        width: 200px;
+        margin: 0 10px 10px 0;
+    }
+    .backtime{
+        padding: 0 10px;height: 32px;line-height: 32px;font-size: 14px;color: #ff8282;font-weight: 500;background: rgba(255, 130, 130, 0.11);display: none;
+    }
+    .choose_list li>a {
+    color: #fff;
+}
+</style>
+<div class="container" style="width:1400px;padding: 0px 0 40px 0">
+    <form id="formId" action="/user/sell/add" method="post" enctype="multipart/form-data">
+        <input type="hidden" name="cardInfoId" value="{$tid}">
+        <input type="hidden" name="cardValueId" value="0">
+        <input type="hidden" name="cardAnyValue" value="0">
+        <input type="hidden" name="isAnyRate" id="isAnyRate">
+        <input type="hidden" name="submitType" value="batch">
+        <input type="hidden" value="{$ture_name_status}" id="ture_name_status">
+        
+        <!-- div class="jaja-cart-style" style="width: 212px;border: 1px solid #ddd;padding: 5px;border-radius: 10px;height: 948px;"> -->
+            <div class="buy_title">选择卡类型</div>
+            <ul class="lx_list">
+                <li class="type_1 "  onclick="getAllCardBrand($(this), 1, '');" data-typeid="1"><i class="iconfont icon-smartphone-fill"></i><div class="lx_txt"><h3>话费卡</h3><p>移动/联通/电信..</p></div></li>
+                <li class="type_2 "  onclick="getAllCardBrand($(this), 2, '');" data-typeid="2"><i class="iconfont icon-gamepad-fill"></i><div class="lx_txt"><h3>游戏卡</h3><p>骏网/九游/网易/完美..</p></div></li>
+                <li class="type_3 "  onclick="getAllCardBrand($(this), 3, '');" data-typeid="3"><i class="iconfont icon-gas-station-fill"></i><div class="lx_txt"><h3>加油卡</h3><p>中石化/中石油..</p></div></li>
+                <li class="type_4 "  onclick="getAllCardBrand($(this), 4, '');" data-typeid="4"><i class="iconfont icon-store--fill"></i><div class="lx_txt"><h3>商超卡</h3><p>中欣/沃尔玛/家乐福..</p></div></li>
+                <li class="type_5 "  onclick="getAllCardBrand($(this), 5, '');" data-typeid="5"><i class="iconfont icon-shopping-cart-fill"></i><div class="lx_txt"><h3>电商卡</h3><p>京东/苏宁/天猫/美团..</p></div></li>
+                <li class="type_6" onclick="getAllCardBrand($(this), 6, '');" data-typeid="18"><i class="iconfont icon-movie--fill"></i><div class="lx_txt"><h3>影视卡</h3><p>腾讯/优酷/爱奇艺..</p></div></li>
+            </ul>
+        <!-- </div> -->
+        <div class="clear"></div>
+        <!-- <div class="jaja-cart-pro" style="margin-left: 250px;margin-top: -961px;position: absolute;padding: 5px;border-radius: 10px;border: 1px solid #ddd;"> -->
+            <div class="buy_title scroll_mz_up">选择卡品牌</div>
+        
+            <ul class="choose_list" id="brand_list" data-brand_id="15">
+            </ul>
+            <div class="clear"></div>
+            <!-- <div class="jaja-cart-val" style="padding: 5px;border-radius: 10px;border: 1px solid #ddd;"> -->
+                <div class="buy_title">选择卡面值</div>
+                <div style="position: relative">
+                    <!--mz_tip_show触发样式-->
+                    <div class="mz_tip"></div>
+                    <ul class="mz_list" id="mz_list">
+                    </ul>
+                    <div class="clear"></div>
+                    <div id="backtime" class="backtime">
+                        
+                    </div>
+                    
+                    <div class="clear"></div>
+                </div>
+            <!-- </div> -->
+            <div id="customRateShow" style="display: none">
+                <div class="buy_title">供货折扣</div>
+                <div class="gh_zk_input"><input type="number" min="1" step="0.01" name="cardAnyRate" id="cardAnyRate" placeholder="" onkeyup="rateFormat(this)"></div>
+                <div class="gh_zk_tip tip2" id="anyRateTips">请先选择卡卷面值</div>
+            </div>
+        <!-- </div> -->
+        
+        
+        <div class="buy_title">选择提交方式</div>
+        <ul class="fs_list">
+            <li class="lx_choose" id="type_batch"><i class="iconfont icon-file-copy-line"></i>批量提交</li>
+            <li id="type_single"><i class="iconfont icon-dual-sim--line"></i>单张提交</li>
+        </ul>
+        <div class="clear"></div>
+        <div class="buy_title" style="display: inline-block">请输入卡号/密码</div><div class="gh_zk_tip tip2" id="tips"></div>
+        <div class="import">
+            <div class="import_tips">
+                <img src=" /public/pc/images/tips.png" alt="">
+                <p class="p1">卡号和卡密之间必须使用空格隔开，<br>每张卡占用一行用“回车键”隔开，例如</p>
+                <p class="p2">6054632001110017020 658359781003040130<br>2060546329011100170 408358350105750026</p>
+            </div>
+            <div class="import_top">
+                <div class="import_top_left">已经输入<span><b><span id="lineCount">0</span>张</b></span>卡，每次最多可提交1000张<span>（单次提交重复卡密，系统将自动过滤）</span></div>
+                <a onclick="tidyChar()" href="javascript:void(0)" class="import_top_btn1">整理卡号/密码</a>
+                <a onclick="delChar()" href="javascript:void(0)" class="import_top_btn2">去除多余字符</a>
+                <input type="text" name="del" class="import_top_input" placeholder="输入去除字符 (特殊符号除外,如: . \ 等)">
+                <div class="clear"></div>
+            </div>
+            <textarea class="import_txt" name="cardBatch" id="cardBatch" onkeydown="cardNum(this,event)" onblur="cardNum(this,'blur')" placeholder="
+请按下面规则填写
+
+1.单次提交只能上传同一种类同一面值的充值卡。
+
+2.上传格式为： 卡号空格卡密
+
+3.每输入完一张充值卡换行输入下一张。
+
+（示例:123456789 987654321）"></textarea>
+        </div>
+        <div class="import_one" style="display: none">
+            <div class="import_one_input" id="cardNo"><input type="text" value="" class="input_one_text" name="cardNo" placeholder="请输入卡号"></div>
+            <div class="import_one_input" id="cardP"><input type="text" value="" class="input_one_text" name="cardPwd" id="cardPwd" placeholder="请输入密码"></div>
+        </div>
+        <div class="agree">
+            <!--            <p id="urgentShow" style="display: none"><label class="checkbox" for="urgent"><input type="checkbox" id="urgent" name="urgent" value="yes" ><span class="checkbox-text">我要加急处理<span class="gray">(9:00-18:00)</span> <span class="text-red" style="display: none" id="urgent-money">（手续费:1.00 元/张）</span> </span></label></p>-->
+            <p><label class="checkbox" for="confirmXY"><input type="checkbox" id="confirmXY" name="confirmXY" value="yes" checked="checked"><span class="checkbox-text"> 我已阅读，理解并接受「<a class="text-blue" target="_blank" href="/about/service">服务协议</a>」和「<a class="text-blue" target="_blank" href="/about/protocol">回收说明</a>」</span></label></p>
+            <p><label class="checkbox" for="legal"><input type="checkbox" id="legal" ><span class="checkbox-text">我已确认该卡号卡密<strong class="text-primary">来源合法</strong>，如有问题，本人愿意承担一切法律责任。</span></label></p>
+        </div>
+        <button type="button" class="buy_btn">确认提交卖卡</button>
+        <div class="clear"></div>
+    </form>
+</div>
+<p id="code"></p>
+
+<input type="hidden" value="{$is_bank.id}" id="is_bank">
+{if $uid}
+
+<div style="float: right">
+    <a class="layui-btn layui-btn-primary layui-btn-xs reloads">刷新订单</a>
+    <a class="layui-btn layui-btn-primary layui-btn-xs" target="_blank" href="pc/user/orders">所有订单</a>
+</div>
+<div style='clear:both'></div>
+<table class="layui-hide" id="LAY_table_user" lay-filter="LAY_table_user"></table>
+<link rel="stylesheet" href="__PUBLIC__static/admin/layuiadmin/layui/css/layui.css" media="all">
+<script src="__PUBLIC__static/admin/layuiadmin/layui/layui.js"></script>
+<script>
+    layui.use(['layer','table'], function() {
+        var table = layui.table;
+        table.render({
+            elem: '#LAY_table_user'
+            , url: "/pc/User/orders"
+            ,totalRow: true
+            , cols: [[
+                {field: 'orderid', title: '订单号',totalRowText:'合计：'}
+                , {field: 'total_orderid', title: '批次'}
+                , {field: 'kazhong', title: '卡种',width: 60 }
+                , {field: 'crad_number', title: '卡号'}
+                , {field: 'cash', title: '提面',totalRow:true}
+                , {field: 'realvalue', title: '实面',totalRow:true}
+                , {field: 'incash', title: '结算',totalRow:true}
+                , {field: 'on_time', title: '提交'}
+                , {field: 'end_time',title: '处理'}
+                , {field: '', title: '描述', templet: function (d) {
+                        var colors = 'green';
+                        if (d.status == 1) {
+                            if (Number(d.cash) != Number(d.realvalue)) {
+                                colors = 'red';
+                                d.status_desc = '实际面额不符';
+                            }
+                        } else {
+                            colors = 'red';
+                        }
+                        if(!d.status_desc){
+                            d.status_desc='';
+                        }
+                        return '<font color="' + colors + '">' + d.status_desc + '</font>';
+                    }
+                }
+                , {field: 'status', width: 90, title: '状态', templet: function (d) {
+                        var colors = 'blue';
+                        if (d.status == 1) {
+                            colors = 'green';
+                        } else if (d.status == 2) {
+                            colors = 'red';
+                        }
+                        return '<font color="' + colors + '">' + d.status_txt + '</font>';
+                    }
+                }
+                // , {field: '', width: 60, title: '操作', templet: '#caozuo'}
+            ]]
+            , id: 'testReload'
+            , limit: 5
+            , page: false
+
+        })
+        $('.reloads').on('click', function () {
+            //执行重载
+            table.reload('testReload', {
+                page: {
+                    curr: 1 //重新从第 1 页开始
+                }
+            })
+        })
+    })
+</script>
+{/if}
+
+
+<script src="/public/pc/js/sellCard.js?v=20211.222" type="text/javascript" charset="utf-8"></script>
+<script src="/public/pc/js/cardFormat.js?v=20211" type="text/javascript" charset="utf-8"></script>
+<script>
+    $(function () {
+        //getAllCardBrand($(this), "{$tid}", '');
+        $('.lx_list li').eq(0).click();
+    });
+</script>
+<div class="mask">
+    <!--  登录弹窗  -->
+    <div class="modal login_modal">
+        <div class="close"></div>
+        <div class="logo_mid"><img src="/public/pc/images/logo_test1.png" alt="logo"></div>
+        <div class="title_mid"><h3>账户登录</h3><p>没有账号？ <a href="/sign/up">立即注册</a></p><div class="clear"></div></div>
+        <div class="clear"></div>
+        <form id="loginForm" action="/sign/in" method="post">
+            <div class="add_input"><input type="text" name="username"  placeholder="手机号"></div>
+            <div class="add_input"><input type="password" name="userpass" placeholder="密码"></div>
+            <button type="button" class="add_btn" id="loginBtn" onclick="login()">登 录</button>
+            {:token()}
+        </form>
+        <p class="tip_mid">忘记密码？ <a href="/passwd">立即找回</a></p>
+    </div>
+    <!--订单确认弹窗-->
+    <div class="modal ddxq_modal">
+        <div class="close"></div>
+        <!--        <div class="title_icon"><img src="/new2020/index/img/dd_icon.png" alt="自定义卡"></div>-->
+        <div class="title_txt"><h3>订单确认</h3><p>有任何问题可联系在线客服</p></div>
+        <div class="clear"></div>
+        <div class="tip2" style="margin:0;display: block">请确认提交面值与实际面值一致！否则后果自负！</div>
+        <ul class="dd_list">
+            <li><div>卡类型</div><div id="type"></div></li>
+            <li><div>卡品牌</div><div id="brand"></div></li>
+            <li><div>卡数量</div><div class="text-danger" id="count"></div></li>
+            <li><div>卡面值</div><div><span class="text-danger" id="price"></span></div></li>
+        </ul>
+        <button class="add_btn" id="submitBtn" onclick="submitCard()">确认面值一致，提交</button>
+    </div>
+
+</div>
+
+<!--  支付宝扫码弹窗  -->
+
+<div class="modal sm_modal" style="opacity:1;z-index:2;display:none">
+    <div class="clear"></div>
+    <div class="sm_bg">
+        <!--            <img id="sign_img" src="" height="120" alt="二维码">-->
+        <p id="sign_img" style="padding-top: 75px"></p>
+        <p>请使用<span class="blue">手机支付宝</span>
+            <br>扫描二维码完成认证</p>
+        <div class="face_btn"><button class="layui-btn layui-btn-sm face_res" type="button" v="1">认证完成</button><button v="2" class="layui-btn layui-btn-sm layui-btn-danger face_res" type="button" >认证失败</button></div>
+    </div>
+    <div class="clear"></div>
+</div>
+<script src="/public/pc/js/jquery.qrcode.min.js?{:time()}" type="text/javascript" charset="utf-8"></script>
+
+
+<script>
+    let isLogin = "{$Think.session.uinfo.id}";
+    function login() {
+        var $username = $('[name=username]');
+        if ($username.val() === '') {
+            layer.msg('登录账户还未填写哦！',{icon:5});
+            return ;
+        }
+        var $userpass = $('[name=userpass]');
+        if ($userpass.val() === '') {
+            layer.msg('密码还未填写哦！',{icon:5});
+            return false;
+        }
+        $.post("/sign/in",$('#loginForm').serialize(),function(data){
+            if(data.code==1){
+                layer.msg(data.msg, {icon: 1});
+                setTimeout(function(){
+                    isLogin = true;
+                    $('#is_truename').val(data.is_truename);
+                    setTimeout(function () {
+                        $('.mask').hide();
+                        $('.modal').removeClass('modal_show');
+                    }, 100)
+
+                },1000); //再执行关闭
+
+            }else{
+                $("input[name='__token__']").val(data.token);
+                layer.msg(data.msg, {icon: 5});
+            }
+        },'json');
+    }
+    $('.lx_list li').click(function () {
+        $(this).addClass('lx_active').siblings('li').removeClass('lx_active');
+    });
+    $('.choose_list li').click(function () {
+        $(this).addClass('lx_choose').siblings('li').removeClass('lx_choose');
+        $(this).children('.zhe').show();
+        $(this).siblings('li').children('.zhe').hide();
+        let index = $(this).index();
+        $('.mz_list').eq(index).show().siblings('.mz_list').hide();
+    });
+    $('.fs_list li').click(function () {
+        $(this).addClass('lx_choose').siblings('li').removeClass('lx_choose');
+        let ind = $(this).index();
+        if (ind == 0){
+            $('.import_one').hide();
+            $('.import').show();
+        }
+        if (ind == 1){
+            $('.import_one').show();
+            $('.import').hide();
+        }
+    });
+    /**
+     * 自定义费率格式化（只保留2位小数）
+     * @param obj
+     */
+    function rateFormat(obj) {
+
+        obj.value = obj.value.replace(/[^\d.]/g,""); //清除"数字"和"."以外的字符
+        obj.value = obj.value.replace(/^\./g,""); //验证第一个字符是数字
+        obj.value = obj.value.replace(/\.{2,}/g,"."); //只保留第一个, 清除多余的
+        obj.value = obj.value.replace(".","$#$").replace(/\./g,"").replace("$#$",".");
+        obj.value = obj.value.replace(/^\D*(\d*(?:\.\d{0,1})?).*$/g, '$1'); //只能输入两个小数
+       
+    }
+    $('.mz_list li').not('.weihu').click(function () {
+        $(this).addClass('lx_choose').siblings('li').removeClass('lx_choose');
+    });
+    $('.mz_list>.weihu').click(function () {
+        alert('当前面值正在维护');
+    });
+    $('.lx_choose').find('.zhe').show();
+    $('.gou').click(function () {
+        $(this).removeClass('gou_huxi');
+        $(this).toggleClass('agree_check');
+    });
+    $('.hs_nav').hover(function () {
+        $('.hs_list').stop().fadeToggle();
+    });
+    $('.sell_show').hover(function () {
+        $('.sell_nav').stop().slideToggle(200);
+    });
+    $('.close').click(function () {
+        $('.mask').hide();
+        $('.modal').removeClass('modal_show');
+    });
+    $('.buy_btn').click(function () {
+        // 判断是否登录
+        if (!isLogin) {
+            $('.mask').show();
+            setTimeout(function () {
+                $('.login_modal').addClass('modal_show');
+            },100);
+            return;
+        }
+        //判断实名制
+        if(!$('#is_bank').val()){
+            layer.open({
+                type: 2,
+                title: '实名认证',
+                shadeClose: true,
+                area: ['480px', '80%'],
+                shade: 0.8,
+                content: '/pc/Tixian/bank',
+            });
+            // layer.msg('您的账户未实名认证，即将跳转至实名认证...',{icon:5 ,time:3000},function () {
+            //     window.location.href='/pc/User/auth_name';
+            // });
+            return;
+        }
+        
+        //判断是人脸 
+        if($('#ture_name_status').val() == '1'){
+            
+           $('.sm_modal').show();
+            var _weburl = window.location.host;
+            var _isLogin = "{$Think.session.uinfo.id}";
+            
+            $('#sign_img canvas').css('display','none');
+            $('#sign_img').qrcode({'text':'http://'+_weburl+'/pc/index/face_zfb?uid='+_isLogin,'width':120,'height':120});
+            
+           
+           
+            return;
+            // layer.msg('您的账户未实名认证，即将跳转至实名认证...',{icon:5 ,time:3000},function () {
+            //     window.location.href='/pc/User/auth_name';
+            // });
+            return;
+        }
+        
+        
+        
+        // 判断是否选择了面值
+        let valueIsSelected = $('[name=cardAnyValue]').val();
+        if (valueIsSelected === "0" || valueIsSelected === "" || valueIsSelected === undefined) {
+            $('html, body').animate({
+                scrollTop: $(".scroll_mz_up").offset().top
+            }, 500);
+            $('.mz_tip').addClass('mz_tip_show');
+            return;
+        }
+        // 支持自定义费率才校验
+        if ($('#isAnyRate').val() === "1") {
+            let customRate = $('#cardAnyRate').val();
+            customRate = Number(customRate);
+            if (customRate !== null || true) {
+                let minRate = $('#anyRateTips').find("span").first().text();
+                let maxRate = $('#anyRateTips').find("span").eq(1).text();
+                if (customRate < minRate) {
+                    // ToastErr("最低折扣不得低于"+ minRate + "%，请重新填写");
+                    // showErrorBorder("#cardAnyRate");
+                    layer.tips("最低折扣不得低于"+ minRate + "%，请重新填写",$('#cardAnyRate'))
+                    return;
+                }
+
+                if (customRate > maxRate) {
+                    // ToastErr("最高折扣不得超过"+ maxRate + "%，请重新填写");
+                    // showErrorBorder("#cardAnyRate");
+                    layer.tips("最高折扣不得超过"+ maxRate + "%，请重新填写",$('#cardAnyRate'))
+                    return;
+                }
+            }
+        }
+
+        let cv = $('#confirmXY').is(':checked');
+        let cx = $('#legal').is(':checked');
+        let subType = $('[name=submitType]').val();
+        console.log(cv,cx)
+        if (cv && cx) {
+            // 检查卡密是否为空
+            if (subType === "batch") {
+                let cardBatch = $.trim($('[name=cardBatch]').val());
+                if (cardBatch.length <= 0) {
+                    // ToastErr("请输入要提交的卡号/卡密");
+                    // showErrorBorder('[name=cardBatch]');
+                    layer.tips("请输入要提交的卡号/卡密",$('[name=cardBatch]'),{tips: 4})
+                    return;
+                }
+                // 判断卡密总数是否超标
+                let cardCount = $('#lineCount').text();
+                if (cardCount > 1000) {
+                    // ToastErr("单次卡密最多提交1000张，超出部分建议您分批提交");
+                    // showErrorBorder("[name=cardBatch]");
+                    layer.tips("单次卡密最多提交1000张，超出部分建议您分批提交",$('[name=cardBatch]'),{tips: 4})
+                    return;
+                }
+                 
+                getCount();
+            }
+            if (subType === "single") {
+                let cardPwd = $('[name=cardPwd]').val();
+                if (cardPwd.length <= 0) {
+                    // ToastErr("请输入要提交的卡号/卡密");
+                    // showErrorBorder('[name=cardPwd]');
+                    layer.tips("请输入要提交的卡号/卡密",$('[name=cardPwd]'))
+                    return;
+                }
+                $('#count').text("1 张")
+            }
+            $('.mask').show();
+            setTimeout(function () {
+                $('.ddxq_modal').addClass('modal_show');
+            },100);
+        } else {
+            if (!cv) {
+                layer.msg("请认真阅读并勾选： 我已阅读，理解并接受「服务协议」和「回收说明」",{icon:5});
+            } else {
+                layer.msg("请确认并勾选：我已确认该卡号卡密来源合法，如有问题，本人愿意承担一切法律责任。",{icon:5});
+            }
+        }
+    });
+    $('.face_res').click(function (obj) {
+        var v=$(this).attr('v');
+        if(v==1){
+           window.location.reload();
+        }else{
+            window.location.reload();
+        }
+    })
+</script>
+{if $au!=1}
+{include file="./common/footer"}
+{/if}

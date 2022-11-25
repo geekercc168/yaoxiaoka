@@ -1,0 +1,98 @@
+{include file='common/header'/}
+<body>
+<div class = 'outermost'>
+	<style type="text/css">
+		.layui-form-item .layui-form-checkbox[lay-skin=primary] {
+		    margin-top: 5px;
+		}
+		.layui-form-pane .layui-form-checkbox {
+		    margin: 5px 0px 5px 10px;
+		}
+		.layui-table[lay-data]{
+			display: block;
+		}
+		.palette{
+			margin: 10px 5px 10px 5px;
+		}
+		body{
+			margin: 10px 10px 10px 10px; 
+			background: white;
+		}
+	</style>
+	<fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
+	    <legend>设置用户组</legend>
+	</fieldset>
+	<!-- 功能栏 -->
+	<form class="layui-form layui-form-pane" method='post' action="">
+		<div class="layui-form-item">
+			<label class="layui-form-label">用户组名称</label>
+			<div class="layui-input-inline">
+				<input type="text" name="groupname" required lay-verify="required" placeholder="请输入用户组名称" autocomplete="off" class="layui-input" value="{$item.groupname}">
+			</div>
+		</div>
+		<div class="layui-form-item">
+			<label class="layui-form-label">权限设置</label>
+			<div class="layui-input-inline" style="width:50%;">
+				<table lay-data='idTest'>
+					{volist name='list' id='vo'}
+						<tr>
+							<td style='border: 1px solid #e6e6e6;width: 135px;height: 36px;'>
+								<label class="layui-form-label" style="border: none">{$vo.submenu_name}</label>
+							</td>
+							<td style='border: 1px solid #e6e6e6;'>
+								{volist name='vo.erji' id='voo'}
+									<li style='float: left;width: 165px'>
+										<input  type="checkbox" name="group_roles[]" <?php if (in_array($voo['resource_id'],$group_roles)){echo 'checked'; }  ?> lay-filter="qx" title="{$voo.resource_name}" lay-skin="primary" value='{$voo.resource_id}'>
+									</li>
+								{/volist}
+							</td>
+						</tr>
+					{/volist}
+				</table>
+			</div>
+		</div>
+		<div class="layui-form-item">
+			<div class="layui-input-block" style='padding-bottom: 15px;'>
+				<button class="layui-btn" lay-submit lay-filter="formDemo">立即提交</button>
+				<button type="reset" class="layui-btn layui-btn-primary">重置</button>
+				<input type="hidden" name='group_id' id='group_id' value="{$item.group_id}">
+			</div>
+		</div>
+	</form>
+</div>
+<script>
+layui.use(['layer', 'form', 'table'], function(){
+ 	var layer = layui.layer,form = layui.form , table = layui.table;
+ 	//监听提交
+	form.on('submit(formDemo)', function(data){
+		$.post("/admin/Admin/user_group_add",$('.layui-form').serialize(),function(data){
+
+			if(data.code==1){
+				var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+				layer.msg(data.msg, {icon: 1});
+				setTimeout(function(){
+					parent.layer.close(index);
+					//修改成功刷新父页面
+					if($('#group_id').val()){
+						//parent.layer.table.reload('LAY_table_user')
+						// window.parent.location.reload();
+					}else{
+						//添加页面直接返回上一页并刷新
+						//window.location.href="/admin/Admin/admin_list";
+						window.location.reload();
+					}
+
+				},1000); //再执行关闭
+
+			}else{
+				layer.msg(data.msg, {icon: 5});
+			}
+		},'json')
+		return false;
+	});
+	// 权限选择监听
+	table.render({ });//其它参数省略
+});
+</script>
+</body>
+</html>

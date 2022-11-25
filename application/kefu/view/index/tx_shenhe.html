@@ -1,0 +1,262 @@
+{include file='common/header' /}
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1786378_02usjpdi4hev.css">
+<style>
+    .width-100{
+        width: 100px;
+    }
+    /*表格间距*/
+    .layui-table-cell{
+        padding: 0 2px;
+    }
+    /*操作按钮*/
+    .layui-btn+.layui-btn{
+        margin-left:0px;
+    }
+    /*分页按钮*/
+    .layui-table-page .layui-laypage a, .layui-table-page .layui-laypage span.layui-laypage-curr{
+        padding:0 4px;
+    }
+    .layui-btn-xs{
+        padding: 0px 3px;
+    }
+</style>
+<div class="main_top">提现审核
+    <a href="javascript:history.back(-1);"  class="back"><img src="/public/wap/img/left_icon.png" alt=""></a>
+<!--    <a class="kf_right"><img src="/public/wap/img/kf_icon.png" alt=""></a>-->
+</div>
+
+<body style='background: white;padding: 2px'>
+
+<!-- 功能栏 -->
+<form class="layui-form" id='form1' style='float: left;'>
+    <div class="demoTable" style='  margin-left: 10px;'>
+<!--        <div class="layui-inline" style="width: 100%;margin-bottom: 5px">-->
+<!--            <input type="text" class="layui-input" id="test1" placeholder="{:date('Y-m-d',time())} 00:00:00 - ">-->
+<!--        </div>-->
+        <div class="layui-inline" style="margin-bottom: 5px">
+
+            <div class="layui-input-inline">
+                <input type="text" class="layui-input" id="startTime"  value="{:date('Y-m-d', strtotime('-3 day'))} 00:00:00">
+            </div>
+                ~
+            <div class="layui-input-inline">
+                <input type="text" class="layui-input" id="endTime" value="{:date('Y-m-d',time())} 00:00:00">
+            </div>
+        </div>
+        <div class="layui-inline width-100">
+            <input type="text" id='txt_uid' placeholder="搜索用户ID" autocomplete="off"
+                   class="layui-input">
+        </div>
+        <div class="layui-inline width-100">
+            <input type="text" id='txt_username' placeholder="搜索用户名称" autocomplete="off"
+                   class="layui-input">
+        </div>
+        <button class='search layui-btn' type="button">搜索</button>
+    </div>
+
+</form>
+
+<div style='clear:both'></div>
+<table class="layui-hide" id="LAY_table_user" lay-filter="LAY_table_user"></table>
+
+<script type="text/html" id="caozuo">
+    <!-- 这里的 checked 的状态只是演示 -->
+    {{# if (d.status == 0) { }}
+    <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="kjt">KJT</a>
+    <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="die">失败</a>
+    <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="card_logg">账变</a>
+<!--    <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="orders">订单</a>-->
+    {{# } }}
+</script>
+<!-- 注意：如果你直接复制所有代码到本地，上述js路径需要改成你本地的 -->
+<script type="text/html" id="time1">
+    {{layui.util.toDateString(d.register_time*1000, 'yyyy-MM-dd HH:mm:ss')}}
+</script>
+<script type="text/html" id="time2">
+    {{layui.util.toDateString(d.last_login_time*1000, 'yyyy-MM-dd HH:mm:ss')}}
+</script>
+<script>
+    setTimeout(function(){location.reload()},15000); //指定1秒刷新一次
+    layui.use(['table', 'form', 'laydate'], function () {
+        var table = layui.table, form = layui.form
+        var laydate = layui.laydate;
+
+        var table = layui.table, form = layui.form
+        var laydate = layui.laydate;
+        //日期范围
+        // 选择日期
+        laydate.render({
+            elem: '#startTime', //指定元素
+            type: 'datetime',
+            theme: '#009688',//#5978fb
+            done: function (value, date, endDate) {
+                var startDate = new Date(value).getTime();
+                var endTime = new Date($('#endTime').val()).getTime();
+                if (endTime < startDate) {
+                    $('#startTime').val($('#endTime').val());
+                }
+            }
+        });
+        laydate.render({
+            elem: '#endTime', //指定元素
+            theme: '#009688',
+            type: 'datetime',
+            done: function (value, date, endDate) {
+                var startDate = new Date($('#startTime').val()).getTime();
+                var endTime = new Date(value).getTime();
+                if (endTime < startDate) {
+                    $('#endTime').val($('#startTime').val());
+                }
+            }
+        });
+
+        var tx_bj="{$tx_bj}";
+        if(tx_bj==1){
+            layer.open({
+                title: '新消息来啦！',
+                type: 2,
+                shadeClose: false, //开启遮罩关闭
+                shade: false,
+                area: ['220px', '220px'],//<audio autoplay="autoplay"><source src="../resource/img/admin/05.mp3" type="audio/wav"/>
+                content: "/public/tx_tixing.html",
+                offset:"rb"
+            })
+            setTimeout(function(){
+                layer.closeAll();//10s自动关闭弹窗
+            },10000);
+        }
+
+        //方法级渲染
+        table.render({
+            elem: '#LAY_table_user'
+            , url: "/kefu/Index/tx_shenhe"
+            ,totalRow:true
+            , cols: [[
+                // {checkbox: true, fixed: true}
+                // {field: 'id', title: '序号',totalRowText:'合计： '}
+                {field: '', title: '用户ID', templet: function (d) {
+                        return '<font>' + d.uid + '【'+d.username+'】</font>';
+                    }}
+                // , {field: 'account',width:30,title: '卡号',totalRow:true}
+                , {field: 'create_time', title: '申请时间'}
+                , {field: 'cash', title: '提现金额',width: 70,totalRow:true}
+                , {
+                    field: 'status',  title: '状态',width: 40, templet: function (d) {
+                        var colors = 'blue';
+                        if (d.status == 1) {
+                            colors = 'green';
+                        }else{
+                            if(d.is_llp==1){
+                                colors = 'red';
+                            }
+                        }
+                        return '<font color="' + colors + '">' + d.status_txt + '</font>';
+                    }
+                }
+                , {field: 'ext', title: '操作',width:130,templet:'#caozuo'}
+            ]]
+            , id: 'testReload'
+            , page: true
+            , limit: 20
+            , done: function (res,curr,count) {tdTitle();}
+        })
+        $('.search').on('click', function () {
+            //执行重载
+            table.reload('testReload', {
+                page: {
+                    curr: 1 //重新从第 1 页开始
+                }
+                , where: {
+                    search_time: $('#startTime').val()+' - '+$('#endTime').val(),
+                    username: $('#txt_username').val(),
+                    uid: $('#txt_uid').val(),
+                }
+            });
+        });
+        //监听删除编辑操作
+        table.on('tool(LAY_table_user)', function (obj) {
+            var data = obj.data; //获得当前行数据
+            var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
+            var tr = obj.tr; //获得当前行 tr 的DOM对象
+            var id = data.id;
+            if (layEvent === 'pass' || layEvent === 'die') {
+                //var type = tr.find('.' + layEvent).attr('value');
+                if(layEvent === 'pass'){
+                    layer.confirm('您确定操作吗？', {
+                        btn: ['确定', '取消'] //按钮
+                    }, function (index) {
+                        $.post("/kefu/Index/tx_status", {id: id,type: 1}, function (data) {
+                            if (data.code == 1) {
+                                layer.msg(data.msg, {icon: 1,time:2000},function () {
+                                    window.location.reload();
+                                });
+                            } else {
+                                layer.msg(data.msg, {icon: 5});
+                            }
+                        }, 'json')
+                        layer.close();
+
+                    });
+                }else{
+                    layer.prompt({
+                        title: '拒绝理由',
+                    },function(val, index){
+                        $.post("/kefu/Index/tx_status", {id: id,'type':2,'chuli_desc':val}, function (data) {
+                            if (data.code == 1) {
+                                layer.msg(data.msg, {icon: 1,time:2000},function () {
+                                    window.location.reload();
+                                });
+                            } else {
+                                layer.msg(data.msg, {icon: 5});
+                            }
+                            layer.closeAll();
+                        }, 'json')
+
+                    });
+                }
+
+            }
+            if(layEvent === 'card_logg' || layEvent === 'orders') {
+                var id = data.id;
+                var url = '';
+                var title = '';
+                if (layEvent === 'card_logg') {
+                    title = '用户账变';
+                    url = '/kefu/Index/card_logg?txt_uid=' + data.uid;
+                } else if (layEvent === 'orders') {
+                    title = '用户订单';
+                    url = '/kefu/Index/orders?txt_uid=' + data.uid;
+                }
+                window.location.href=url;
+                // layer.open({
+                //     type: 2,
+                //     title: title,
+                //     shadeClose: true,
+                //     area: ['99%', '99%'],
+                //     shade: 0.8,
+                //     content: url,
+                // });
+            }
+            if(layEvent === 'kjt'){
+                layer.prompt({
+                    formType: 1,
+                    value: 'jjf168@@',
+                    title: '请输入打款密码',
+                    area: ['200px', '150px'] //自定义文本域宽高
+                }, function(val, index){
+                    $.post("/kefu/Index/tx_kjt", {id: id,'type':2,'pwd':val}, function (data) {
+                        if (data.code == 1) {
+                            layer.msg(data.msg, {icon: 1,time:2000},function () {
+                                window.location.reload();
+                            });
+                        } else {
+                            layer.closeAll();
+                            layer.msg(data.msg, {icon: 5});
+                        }
+                    }, 'json')
+
+                });
+            }
+        });
+    });
+</script>

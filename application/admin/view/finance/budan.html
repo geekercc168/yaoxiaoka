@@ -1,0 +1,72 @@
+{include file='common/header'/}
+<body>
+<div class = 'outermost'>
+	<style type="text/css">
+		body{
+			margin: 10px 10px 10px 10px; 
+			background: white;
+		}
+	</style>
+	<fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
+	    <legend>用户余额变动</legend>
+	</fieldset>
+	<!-- 功能栏 -->
+	<form class="layui-form layui-form-pane" method='post' action="">
+		<div class="layui-form-item">
+			<label class="layui-form-label">用户ID</label>
+			<div class="layui-input-inline">
+				<input type="number" name="uid" required lay-verify="required" autocomplete="off" class="layui-input" value="{$item.fee}">
+			</div>
+		</div>
+		<input type="text" name="key" value="{$key}" hidden>
+		<div class="layui-form-item">
+			<label class="layui-form-label">金额</label>
+			<div class="layui-input-inline">
+				<input type="number" name="cash" required lay-verify="required" autocomplete="off" class="layui-input" value="{$item.fee}">
+			</div>
+		</div>
+		<div class="layui-form-item">
+			<label class="layui-form-label">变动类型</label>
+			<div class="layui-input-inline">
+				<input type="text" name="bd_type" required lay-verify="required" autocomplete="off" class="layui-input" value="{$item.fee}">
+			</div>
+		</div>
+		<div class="layui-form-item">
+			<label class="layui-form-label">增减类型</label>
+			<div class="layui-input-block" style='line-height: 36px;'>
+				<div class="layui-input-inline">
+					<input type="radio" name="txt_ext" checked value="1" title="增加">
+					<input type="radio" name="txt_ext" value="2" title="扣除">
+				</div>
+			</div>
+		</div>
+		<div class="layui-form-item">
+			<div class="layui-input-block" style='padding-bottom: 15px;'>
+				<button class="layui-btn" lay-submit lay-filter="formDemo">立即提交</button>
+				<button type="reset" class="layui-btn layui-btn-primary">重置</button>
+			</div>
+		</div>
+	</form>
+</div>
+<script>
+layui.use(['layer', 'form', 'table'], function(){
+ 	var layer = layui.layer,form = layui.form , table = layui.table;
+ 	//监听提交
+	form.on('submit(formDemo)', function(data){
+		$.post("/dazhang",$('.layui-form').serialize(),function(data){
+			if(data.code==1){
+				var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+				layer.msg(data.msg, {icon: 1,time:1500},function () {
+					window.location.reload();
+				});
+			}else{
+				layer.msg(data.msg, {icon: 5});
+			}
+		},'json')
+		return false;
+	});
+	// 权限选择监听
+});
+</script>
+</body>
+</html>

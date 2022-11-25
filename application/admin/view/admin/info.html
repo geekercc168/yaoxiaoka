@@ -1,0 +1,105 @@
+{include file="common/header" /}
+<body>
+
+    <div class="layui-fluid">
+        <div class="layui-row layui-col-space15">
+            <div class="layui-col-md12">
+                <div class="layui-card">
+                    <div class="layui-card-header">
+                        <fieldset class="layui-elem-field layui-field-title" style="">
+                            <legend >设置我的资料</legend>
+                        </fieldset>
+                    </div>
+                    <div class="layui-card-body" pad15>
+                        <form class="layui-form layui-form-pane" method='post' action="" style='margin: 10px 10px 10px 30px;'>
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">我的角色</label>
+                                <div class="layui-input-inline">
+                                    <select name="role" lay-verify="">
+                                        <option value="1" {if condition="$list.group_id eq 1"}selected{else /}disabled{/if} >超级管理员</option>
+                                        <option value="2" {if condition="$list.group_id eq 0"}selected{else /}disabled{/if}>普通管理员</option>
+                                    </select> 
+                                </div>
+                                <div class="layui-form-mid layui-word-aux">当前角色不可更改为其它角色</div>
+                            </div>
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">用户名</label>
+                                <div class="layui-input-inline">
+                                    <input type="text" name="username" value="{$Think.session.admin_user}" readonly class="layui-input">
+                                </div>
+                                <div class="layui-form-mid layui-word-aux">不可修改。一般用于后台登入名</div>
+                            </div>
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">昵称</label>
+                                <div class="layui-input-inline">
+                                    <input type="text" name="admin_realname" value="{$list.admin_realname}" lay-verify="nickname" autocomplete="off" placeholder="请输入昵称" class="layui-input">
+                                </div>
+                            </div>
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">手机</label>
+                                <div class="layui-input-inline">
+                                    <input type="text" name="admin_tel" value="{$list.admin_tel}" lay-verify="phone" autocomplete="off" class="layui-input">
+                                </div>
+                            </div>
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">邮箱</label>
+                                <div class="layui-input-inline">
+                                    <input type="text" name="admin_email" value="{$list.admin_email}" lay-verify="email" autocomplete="off" class="layui-input">
+                                </div>
+                            </div>
+                            <div class="layui-form-item">
+                                <div class="layui-input-block">
+                                    <button class="layui-btn" lay-submit lay-filter="setmyinfo">确认修改</button>
+                                    <button type="reset" class="layui-btn layui-btn-primary">重新填写</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+<script>
+layui.use(['layer', 'form','upload','layedit'], function(){
+    var layer = layui.layer
+    var form = layui.form
+    var upload = layui.upload
+    //监听提交
+    form.on('submit(formDemo)', function(data){
+        
+    });
+    form.verify({
+    title: function(value){
+      if(value.length < 5){
+        return '标题至少得5个字符啊';
+      }
+    }
+    ,pass: [/(.+){6,15}$/, '密码必须6到15位']
+    ,content: function(value){
+      layedit.sync(editIndex);
+    }
+    
+    ,username: [/^[a-zA-Z][a-zA-Z0-9_]*$/, '以英文字母开头，只能包含英文字母、数字、下划线']
+    ,content: function(value){
+      layedit.sync(editIndex);
+    }
+  });
+    //普通图片上传
+    upload.render({
+        elem: '#upload_pic'
+        ,url: "/admin/manager_upload"
+        ,before: function(obj){
+            layer.msg('上传中',{icon:16,time:false});
+                obj.preview(function(index, file, result){
+                    $('#demo').attr('src', result); //图片链接（base64）
+                });
+        }
+        ,done: function(res){
+            $('#img').val(res.data.src);
+            layer.closeAll();
+        }
+    })
+});
+</script>
+</body>
+</html>

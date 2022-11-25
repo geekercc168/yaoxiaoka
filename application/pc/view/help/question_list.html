@@ -1,0 +1,148 @@
+{if $is_mobile==1}
+{include file="./common/mheader"}
+<div class="main_top">
+    信息详情
+    <a href="javascript:history.back(-1);" class="back"><img src="/public/wap/img/left_icon.png" alt=""></a>
+    <a class="kf_right"><img src="/public/wap/img/kf_icon.png" alt=""></a>
+</div>
+{else}
+{include file="./common/header"}
+<link rel="stylesheet" type="text/css" href="/public/pc/css/base.css?v=2021"/>
+{include file="./common/nav"}
+{/if}
+<link rel="stylesheet" href="__PUBLIC__static/admin/layuiadmin/layui/css/layui.css" media="all">
+<style type="text/css">
+    .layui-table-view .layui-table {
+        width: 100%;
+    }
+</style>
+<body layadmin-themealias="default">
+<div class="layui-container" style="min-height: 450px;"> 
+  <div class="layui-row">
+    <div class="layui-col-md12">
+    <!-- 功能栏 -->
+    <form class="layui-form" id='form1' style='float: left;'>
+        <div class="demoTable" style=''>
+            <div class="layui-inline">
+                <input type="text" id='search_name'  placeholder="请输入标题" autocomplete="off" class="layui-input" >
+            </div>
+            <span class='search layui-btn'>搜索</span>
+        </div>
+    </form>
+    
+
+    <div style='clear:both'></div>
+
+    <table class="layui-hide" id="LAY_table_user" lay-filter="LAY_table_user"></table>
+
+    <script type="text/html" id="caozuo">
+    <!-- 这里的 checked 的状态只是演示 -->
+    <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="info">详情</a>
+    </script>
+    <script type="text/html" id="pub_time">
+        {{layui.util.toDateString(d.pub_time*1000, 'yyyy-MM-dd HH:mm:ss')}}
+    </script>
+    </div>
+</div>
+</div>
+    {if $is_mobile==1}
+    {include file="./common/mfooter"}
+    {else}
+    {include file="./common/footer"}
+    {/if}
+<div style='clear:both'></div>
+<script src="__PUBLIC__static/admin/layuiadmin/layui/layui.js?v=20211"></script>
+<script>
+
+    layui.use(['table','form'], function(){
+        var table = layui.table,form = layui.form;
+
+        //方法级渲染
+        table.render({
+            elem: '#LAY_table_user'
+            ,url: "/question"
+            ,cols: [[
+                // {checkbox: true, fixed: true}
+                {field:'id', title: 'ID',width:100,  unresize: true}
+                ,{field:'title',width:250, title: '标题',unresize: true }
+                ,{field:'content', title: '内容',unresize: true }
+                ,{field:'pub_time',width:180, title: '发布时间',unresize: true ,sort: true,templet: '#pub_time'}
+                ,{field:'', width:180, title: '操作',unresize: true,templet: '#caozuo' }
+            ]]
+            ,id: 'testReload'
+            ,page: true
+            ,limit: 20
+            , done: function (res) {
+                tdTitle();
+            }
+        })
+        $('.search').on('click', function(){
+            //执行重载
+            table.reload('testReload', {
+                page: {curr: 1}
+                ,where: {
+                    search_name:$('#search_name').val(),
+
+                }
+            });
+        });
+        form.on('switch(change)', function(obj){
+            var id = this.value;
+            var status=obj.elem.checked;
+            if (status== true) {
+                type=1;
+            }else{
+                type=2;
+            }
+            $.post("/admin/article/question_on",{id:id,type:type},function(data){
+                layer.msg(data.msg);
+            },'json')
+        });
+        //监听删除编辑操作
+        table.on('tool(LAY_table_user)', function(obj){
+            var data = obj.data; //获得当前行数据
+            var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
+            var tr = obj.tr; //获得当前行 tr 的DOM对象
+            if(layEvent === 'info'){ //编辑
+                var id = data.id;
+                // layer.open({
+                //  type: 2,
+                //  title:'详情',
+                //  shadeClose: true,
+                //  area: ['90%', '90%'],
+                //  shade: 0.8,
+                //  content: '/ninfo?t=2&id='+id,
+                // });
+                $.get('/ninfo?t=2&id='+id, {'show':1}, function(res){
+                    layer.open({
+                        // type: 1,
+                        title:[res.data.title, 'text-align:center'],
+                        shadeClose: true,
+                        area: ['80%', '90%'],
+                        shade: 0.8,
+                        content: res.data.content,
+                        btn: ''
+                    });
+                });
+            }
+        });
+        table.on('rowDouble(LAY_table_user)', function(obj){
+        // console.log(obj)
+            var data = obj.data; //获得当前行数据
+            var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
+            var tr = obj.tr; //获得当前行 tr 的DOM对象
+            var id = data.id;
+            $.get('/ninfo?t=2&id='+id, {'show':1}, function(res){
+                layer.open({
+                    // type: 1,
+                    title:[res.data.title, 'text-align:center'],
+                    shadeClose: true,
+                    area: ['80%', '90%'],
+                    shade: 0.8,
+                    content: res.data.content,
+                    btn: ''
+                });
+            });
+        });
+    });
+</script>

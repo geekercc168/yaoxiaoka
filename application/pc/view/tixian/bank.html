@@ -1,0 +1,178 @@
+{include file='common/headers'/}
+<style>
+    .layui-form-item{
+        margin-bottom: 10px;
+    }
+</style>
+<div class = 'outermost'>
+    <div class="layui-card-header" style='border-bottom: none;'>
+        <fieldset class="layui-elem-field layui-field-title" style="    margin-top: -7px;">
+            <legend>编辑银行卡</legend>
+        </fieldset>
+    </div>
+    <form class="layui-form" action="">
+        {if($way_add == 'yhk')}
+        <div class="yhk">
+        <div class="layui-form-item">
+            <label class="layui-form-label">选择银行</label>
+            <div class="layui-input-inline">
+                <select name="banktype" id='banktype' lay-verify="" lay-search="">
+                    <option value="">--请选择提现方式{$item.bank}--</option>
+                    {foreach $bank_arr as $k=>$v}
+                    <option value="{$k}" {if $item.bank==$k} selected {/if}>{$v}</option>
+                    {/foreach}
+                </select>
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <label class="layui-form-label">收款人姓名</label>
+            <div class="layui-input-inline">
+                <input type="text" name="txt_truename" id="txt_truename"  value="{$res.truename}" lay-verify=""
+                       placeholder="请输入收款人姓名" autocomplete="off" class="layui-input" readonly>
+            </div>
+                <div class="layui-form-mid layui-word-aux"><span style='color: red'>*</span>&nbsp收款人姓名需与实名信息一致，如要换其他收款人请新注册账号</div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">提现账号</label>
+            <div class="layui-input-inline" >
+                <input type="text" name="nums" id='nums' value="{$item.bank_number}" lay-verify=""
+                       placeholder="请输入提现账号" autocomplete="off" class="layui-input">
+            </div>
+            <div class="layui-form-mid layui-word-aux"><span style='color: red'>*</span>必填项</div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">确认账号</label>
+            <div class="layui-input-inline" >
+                <input type="text" name="rel_nums" id='rel_nums' value="{$item.bank_number}" lay-verify=""
+                       placeholder="请输入确认账号" autocomplete="off" class="layui-input">
+            </div>
+            <div class="layui-form-mid layui-word-aux"><span style='color: red'>*</span>必填项</div>
+        </div>
+        <div class="layui-form-item">
+            <label class="layui-form-label">所属银行</label>
+            <div class="layui-input-inline" >
+                <input type="text" name="bankname" id='bankname' value="{$item.bankname ? $item.bankname : '' }"
+                       placeholder="请输入所属银行" autocomplete="off" class="layui-input">
+            </div>
+        </div>
+        </div>
+        {/if}
+        {if($way_add == 'zfb')}
+        <div class="zfb" style="display:">
+            <div class="layui-form-item">
+                <label class="layui-form-label">姓名</label>
+                <div class="layui-input-inline">
+                    <input type="text" name="zfb_txt_truename" id="zfb_txt_truename"  value="{$res.truename}" lay-verify=""
+                           placeholder="请输入收款人姓名" autocomplete="off" class="layui-input" readonly>
+                </div>
+                    <div class="layui-form-mid layui-word-aux"><span style='color: red'>*</span>&nbsp收款人姓名需与实名信息一致，如要换其他收款人请新注册账号</div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">支付宝账号</label>
+                <div class="layui-input-inline" >
+                    <input type="text" name="zfb_nums" id='zfb_nums' value="{$item.zfb_number}" lay-verify=""
+                           placeholder="请输入支付宝账号" autocomplete="off" class="layui-input">
+                </div>
+                <div class="layui-form-mid layui-word-aux"><span style='color: red'>*</span>支付宝登录账号</div>
+            </div>
+        </div>
+        {/if}
+        <div class="layui-form-item">
+            <label class="layui-form-label">默认提现</label>
+            <div class="layui-input-inline">
+                <input type="checkbox" name="swmr" value="1" lay-skin="switch" lay-text="是|否" {if $item.type=="1" || !($item.id)} checked="checked"{/if}>
+            </div>
+        </div>
+        <input type="hidden" name='id' id='id' value="{$item.id}">
+        <div class="layui-form-item">
+            <div class="layui-input-block">
+                <button class="layui-btn" type='button' lay-submit lay-filter="formDemo">立即提交</button>
+            </div>
+        </div>
+    </form>
+</div>
+
+<script>
+    //监听提交
+    layui.use(['layer', 'form', 'table'], function () {
+            var layer = layui.layer, form = layui.form, table = layui.table;
+            var status="{$res.status}";
+            if(status!=1){
+                //没有则打开实名页面
+                window.location.href='/pc/User/auth_name';
+            }
+            //监听提交
+            form.on('submit(formDemo)', function (data) {
+                var bankno = $("#nums").val();
+                var bankno_r = $("#rel_nums").val();
+
+                if(data.field.tx_way == 1){
+
+                    if(bankno == "" || bankno_r == "" ) {
+                        layer.msg("请填写银行卡号");
+                        return false;
+                    }
+
+                    if(!$('#txt_truename').val()) {
+                        layer.msg("请填写收款人姓名，请确保姓名与实名信息一致");
+                        return false;
+                    }
+
+                    var num = /^\d*$/; //全数字
+                    if(!num.exec(bankno) || !num.exec(bankno_r)) {
+                        layer.msg("银行卡号必须全为数字");
+                        return false;
+                    }
+                    if(bankno.length < 16 || bankno.length > 19 || bankno_r.length < 16 || bankno_r.length > 19) {
+                        layer.msg("银行卡号长度必须在16到19之间");
+                        return false;
+                    }
+
+                    //开头6位
+                    var strBin = "10,18,30,35,37,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,58,60,62,65,68,69,84,87,88,94,95,98,99";
+                    if(strBin.indexOf(bankno.substring(0, 2)) == -1 || strBin.indexOf(bankno_r.substring(0, 2)) == -1) {
+                        layer.msg("银行卡号开头6位不符合规范");
+                        return false;
+                    }
+                }else{
+                    var zfb = $("#zfb_nums").val();
+                    if(zfb == "") {
+                        layer.msg("请填写支付宝账号");
+                        return false;
+                    }
+                }
+                $.post("/pc/Tixian/bank", $('.layui-form').serialize(), function (data) {
+                    if (data.code == 1) {
+                        var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+                        layer.msg(data.msg, {
+                            icon: 1,
+                            time: 1000 //2秒关闭（如果不配置，默认是3秒）
+                        }, function(){
+                            parent.window.location.reload();
+                            parent.layer.closeAll();
+                        });
+
+                    } else {
+                        layer.msg(data.msg, {icon: 5});
+                    }
+                }, 'json')
+            })
+
+            form.on('switch(tx_way)', function(data){
+                var tx_way = data.elem.checked;
+                if(tx_way === true){
+                    $('.zfb').hide();
+                    $('.yhk').show();
+                }
+                if(tx_way === false){
+                    $('.zfb').show();
+                    $('.yhk').hide();
+                }
+
+            })
+
+        });
+
+
+</script>

@@ -1,0 +1,82 @@
+<div class="shadow"></div>
+<div class="shell_show kf_show_modal animated slideInUp">
+    <div class="shell_show_head">请选择官网客服</div>
+    <span class="close_btn"><img src="/public/wap/img/close_icon2.png" alt=""></span>
+    <div class="shell_show_kl">
+        <ul>
+            <li onclick="layer.open({
+            type: 1,
+            title: '官网客服QQ',
+            shadeClose: true,
+            area: ['100%', '100px'],
+            shade: 0.8,
+            content: '<br/>&nbsp;&nbsp;&nbsp;1828847938',})"><i class="iconfont icon-message--line"></i>在线客服咨询<span class="shell_show_kl_right"><img src="/public/wap/img/right_icon.png" alt=""></span></li>
+            <li onclick="window.location='tel:400-075-5998'"><i class="iconfont icon-phone-line"></i>在线客服电话<span class="shell_show_kl_right"><img src="/public/wap/img/right_icon.png" alt=""></span></li>
+            <li onclick="window.location='/'"><i class="iconfont icon-home-smile-line"></i>返回点卡首页<span class="shell_show_kl_right"><img src="/public/wap/img/right_icon.png" alt=""></span></li>
+        </ul>
+    </div>
+</div>
+<script>
+    $('.kf_right').click(function () {
+        $('.shadow').show();
+        $('.kf_show_modal').show();
+    });
+    $('.close_btn,.shadow').click(function () {
+        $('.shell_show').hide();
+        $('.shadow').hide();
+    });
+    // $('.kf_right').click(function () {
+    //     // window.location.href='mqqwpa://im/chat?chat_type=wpa&uin=169632957&version=1&src_type=web&web_src=oicqzone.com';
+    //     window.location.href='mqqwpa://im/chat?chat_type=wpa&uin=169632957&version=1&src_type=web&web_src=';
+    // })
+    var pos = function (event) {  //鼠标定位赋值函数
+        var posX = 0, posY = 0;  //临时变量值
+        var e = event || window.event;  //标准化事件对象
+        if (e.pageX || e.pageY) {  //获取鼠标指针的当前坐标值
+            posX = e.pageX;
+            posY = e.pageY;
+        } else if (e.clientX || e.clientY) {
+            posX = event.clientX + document.documentElement.scrollLeft + document.body.scrollLeft;
+            posY = event.clientY + document.documentElement.scrollTop + document.body.scrollTop;
+        }
+        sessionStorage.setItem("cookieLogin", posX.toString()+posY.toString());
+        var d = new Date();
+        sessionStorage.setItem("passTime", d.getTime());
+       
+    }
+
+    // var div1 = document.getElementById("div1");
+    document.onmousemove = function () {
+        // pos();
+    }
+    
+    function saveCookie(){
+        let _cookieLogin = sessionStorage.getItem("cookieLogin");
+        
+        let _passTime = sessionStorage.getItem("passTime");
+
+        let _d = new Date();
+        let _now = _d.getTime();
+        var _uuid = "{$_SESSION['think']['uid']}";
+
+        let _time = parseInt(_now) - parseInt(_passTime);
+        console.log(_time)
+        if(_time >= 30*1000*60){
+            $.get('/pc/index/onlineCount',{uid:_uuid},function(res){
+                console.log(res);
+            },'json');
+        }else{
+            $.get('/pc/index/onlineCount',{uid:_uuid,redis_time:'yxk'},function(res){
+                console.log(res);
+            },'json');
+        }
+        
+    }
+    var _uuid = "{$_SESSION['think']['uid']}";
+    if(_uuid > 0 ){
+       setInterval(saveCookie, 10000); 
+    }
+    $("body").on("click", function(e) {
+        pos();
+    });
+</script>

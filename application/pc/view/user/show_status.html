@@ -1,0 +1,112 @@
+
+{include file='common/headers'/}
+<style>
+    .balance_card{
+        height: inherit;
+    }
+    .hd_title{
+        margin: 17px 68px;
+    }
+</style>
+<link rel="stylesheet" type="text/css" href="/public/pc/css/swiper.min.css" />
+<div class="right">
+    <div class="main animated fadeInUp">
+
+        <div class="balance_card" style="width: 100%;padding: 0 0 20px 0;margin: 0px;">
+         
+            <div class="hd_title">今日回收状态 
+                <a href="#" onclick="newTab('/pc/User/orders','销卡记录')">
+                    更多<img src="/public/pc/images/more.png" alt="">
+                </a>
+                 <hr />
+            </div>
+            <ul class="hd_list">
+                <li>
+                    <p class="p1"><img src="/public/pc/images/order_icon.png" alt="">待售（张）</p>
+                    <h3>{$data.t_jy_ds.bishu?:0}</h3>
+                    <p class="p2">待售面额：{$data.t_jy_ds.miane?:0}</p>
+                </li>
+                <li>
+                    <p class="p1"><img src="/public/pc/images/order_icon.png" alt="">已售（张）</p>
+                    <h3>{$data.t_jy_cg.bishu?:0}</h3>
+                    <p class="p2">结算金额：{$data.t_jy_cg.jiesuane?:0}</p>
+                </li>
+                <li>
+                    <p class="p1"><img src="/public/pc/images/order_icon.png" alt="">失败订单（张）</p>
+                    <h3>{$data.t_jy_sb.bishu?:0}</h3>
+                    <p class="p2">失败面额：{$data.t_jy_sb.miane?:0}</p>
+                </li>
+            </ul>
+            <div class="clear"></div>
+            <div class="hd_title">昨日回收状态 <hr /> </div>
+            <ul class="hd_list">
+                <li>
+                    <p class="p1"><img src="/public/pc/images/order_icon.png" alt="">待售（张）</p>
+                    <h3>{$data.z_jy_ds.bishu?:0}</h3>
+                    <p class="p2">待售面额：{$data.z_jy_ds.miane?:0}</p>
+                </li>
+                <li>
+                    <p class="p1"><img src="/public/pc/images/order_icon.png" alt="">已售（张）</p>
+                    <h3>{$data.z_jy_cg.bishu?:0}</h3>
+                    <p class="p2">结算金额：{$data.z_jy_cg.jiesuane?:0}</p>
+                </li>
+                <li>
+                    <p class="p1"><img src="/public/pc/images/order_icon.png" alt="">失败订单（张）</p>
+                    <h3>{$data.z_jy_sb.bishu?:0}</h3>
+                    <p class="p2">失败面额：{$data.z_jy_sb.miane?:0}</p>
+                </li>
+            </ul>
+            <div class="clear"></div>
+            <div class="hd_title">提现数据 <hr /></div>
+            <ul class="hd_list" style="margin-left: 28px;">
+                <li>
+                    <p class="p1"><img src="/public/pc/images/order_icon.png" alt="">今日提现成功次数</p>
+                    <h3>{$data.t_tx_res.tx_bishu?:0}</h3>
+                    <p class="p2">金额：{$data.t_tx_res.tx_cash?:0}</p>
+                </li>
+                <li>
+                    <p class="p1"><img src="/public/pc/images/order_icon.png" alt="">昨日提现成功次数</p>
+                    <h3>{$data.z_tx_res.tx_bishu?:0}</h3>
+                    <p class="p2">金额：{$data.z_tx_res.tx_cash?:0}</p>
+                </li>
+            </ul>
+        </div>
+        
+        <div class="clear"></div>
+    </div>
+</div>
+<style type="text/css">
+    #dsfsdf{
+        line-height: 30px;padding: 0 25px;
+    }
+</style>
+<script src="/public/pc/js/swiper.min.js" type="text/javascript" charset="utf-8"></script>
+<script>
+    
+    function ninfo(id) {
+
+        $.get('/ninfo?id='+id, {'show':1}, function(res){
+            layer.open({
+                // type: 1,
+                title:[res.data.title, 'text-align:center'],
+                shadeClose: true,
+                area: ['50%', '50%'],
+                shade: 0.8,
+                content: res.data.content
+            });
+        });
+    }
+    
+    function showStatus(){
+        layer.open({
+            type: 2,
+            title:'统计经营概况',
+            shadeClose: true,
+            area: ['80%', '80%'],
+            shade: 0.8,
+            content: '/pc/user/show_status',
+        });
+    }
+</script>
+
+

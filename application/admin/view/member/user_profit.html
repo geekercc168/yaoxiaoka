@@ -1,0 +1,58 @@
+{include file='common/header' /}
+<style>
+    .profit_table th,td{
+        text-align: center;
+    }
+</style>
+<div class = 'outermost'>
+<form class="layui-form" action="">
+    <table class="layui-table profit_table">
+        <tr>
+            <th>卡品牌</th>
+            <th>卡类型</th>
+            <th>默认费率</th>
+            <th>用户指定费率</th>
+            <th>卡种状态</th>
+            <th>操作</th>
+        </tr>
+        {foreach $list as $v}
+        <tr>
+            <td>{$v.title}</td>
+            <td>{if $v.card_type==1}话费卡{elseif $v.card_type==2}游戏卡{elseif $v.card_type==3}加油卡{elseif $v.card_type==4}商超卡{elseif $v.card_type==5}电商卡{elseif $v.card_type==6}影视卡{/if}</td>
+            <td>{$v.zc_profit}</td>
+            <td><input type="number" step="0.01" onkeyup="value=value.replace(/^\D*(\d*(?:\.\d{0,2})?).*$/g, '$1')" value="{$v.user_profit}" id="type{$v.id}"></td>
+            <td>{if $v.status==1}<font color="green">开启</font>{else}<font color="red">关闭</font>{/if}</td>
+            <td><button type="button" class="layui-btn layui-btn-xs set_pro" tid="{$v.id}">保存</button></td>
+        </tr>
+        {/foreach}
+    </table>
+
+    <input type="hidden" name='uid' id='uid' value="{$uid}">
+</form>
+</div>
+
+<script>
+    //Demo
+    layui.use('form', function () {
+        $('.set_pro').click(function () {
+            var dk_id=$(this).attr('tid');
+            $.post("/admin/Member/user_profit", {
+                'uid':$('#uid').val(),
+                'dk_id':dk_id,
+                'profit':$('#type'+dk_id).val(),
+            }, function (data) {
+                if (data.code == 1) {
+                    var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+                    layer.msg(data.msg, {icon: 1,time:1500},function () {
+                        parent.layer.close(index);
+                        window.parent.location.reload();
+                    });
+                } else {
+                    layer.msg(data.msg, {icon: 5});
+                }
+            }, 'json')
+            return false;
+        })
+    })
+
+</script>

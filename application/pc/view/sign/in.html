@@ -1,0 +1,113 @@
+{if $is_mobile==1}
+{include file="./common/mheader"}
+<div class="main_top">
+    登录
+    <a href="javascript:history.back(-1);" class="back"><img src="/public/wap/img/left_icon.png" alt=""></a>
+    <a class="kf_right"><img src="/public/wap/img/kf_icon.png" alt=""></a>
+</div>
+{else}
+{include file="./common/header"}
+<link rel="stylesheet" type="text/css" href="/public/pc/css/login.css?v=20212"/>
+{include file="./common/nav"}
+{/if}
+<div class="container" {if $is_mobile==0} style="width: 1400px;" {/if}>
+    <div class="user_ins" ></div>
+    <div class="login_box">
+        <div class="login_box_head"><a href="#" class="active">登 录</a><a href="/sign/up">注 册</a><div class="login_box_head_line"></div></div>
+        <div class="login_form">
+            <form id="formId" action="/sign/in" method="post">
+                <input type="hidden" name="target" value="">
+                <div class="login_form_input"><input type="text" name="username" placeholder="请输入登录账号" title="" autofocus id="username" data-tipso="Tips"></div>
+                <div class="login_form_input"><input type="password" name="userpass" placeholder="请输入密码"></div>
+                <button class="login_form_btn" id="submitBtn" type="button" onclick="submitForm()">马 上 登 录</button>
+                {:token()}
+            </form>
+            <p class="forget_pass">忘记密码？<a href="/passwd">去找回</a></p>
+            <br />
+        </div>
+    </div>
+</div>
+
+{if $is_mobile==1}
+{include file="./common/wap_beian"}
+{/if}
+<!--遮罩-->
+<style>
+    .add_input .yzm{
+        position: absolute;
+        right: 15px;
+        top: 0;
+        line-height: 48px;
+        color: #3f6ff6;
+    }
+</style>
+<div class="mask">
+    <!--  验证码弹窗  -->
+    <div class="modal login_sub_modal">
+        <div class="title_icon"><i class="iconfont icon-anquan" style="font-size: 45px; color: #5673ff"></i></div>
+        <div class="title_txt"><h3>账户安全校验</h3><p>为确保您的账户安全，需验证你的短信验证码</p></div>
+        <div class="clear"></div>
+        <form id="sms" action="/sign/in/smsaction" method="post">
+            <input type="hidden" name="target" value="">
+            <div class="add_input"><input type="text" name="telcode" placeholder="短信验证码"><a id="yzm_btn" onclick="getTelCode()" class="yzm">获取验证码</a></div>
+            <button class="add_btn" id="verifyBtn" type="button" onclick="verifyForm()">立即验证</button>
+        </form>
+    </div>
+</div>
+<!--<script src="/public/pc/js/Toast.js" type="text/javascript" charset="utf-8"></script>-->
+<script>
+    $('.sell_show').hover(function () {
+        $('.sell_nav').stop().slideToggle(200);
+    });
+
+    $(function() {
+        $('[name=userpass], [name=username]').keydown(function(e){
+            var theEvent = e || window.event;
+            var code = theEvent.keyCode || theEvent.which || theEvent.charCode;
+            if (code == 13) {  submitForm();  }
+        });
+    });
+
+    var timeoutObj;
+    function submitForm() {
+        var isBreak = false;
+        var $username = $('[name=username]');
+        if ($username.val() === '') {
+            layer.msg('登录账户还未填写哦！',{icon:5});
+            return ;
+        }
+        var $userpass = $('[name=userpass]');
+        if ($userpass.val() === '') {
+            layer.msg('密码还未填写哦！',{icon:5});
+            return false;
+        }
+        $.post("/sign/in",$('#formId').serialize(),function(data){
+            if(data.code==1){
+                layer.msg(data.msg, {icon: 1});
+                setTimeout(function(){
+                    var gourl="{$Think.session.gourl}";
+                    if({$is_mobile}==1){
+                        window.location.href='/';
+                    }else{
+                        window.location.href='/user';
+                    }
+                    // if(gourl){
+                    //     window.location.href=gourl;
+                    // }else{
+                    //     //添加页面直接返回上一页并刷新
+                    //     window.location.href='/user';
+                    // }
+
+                },1000); //再执行关闭
+
+            }else{
+                $("input[name='__token__']").val(data.token);
+                layer.msg(data.msg, {icon: 5});
+            }
+        },'json');
+        return false;
+    }
+</script>
+{if $is_mobile!=1}
+{include file="./common/footer"}
+{/if}

@@ -1,0 +1,7 @@
+# robots.txt generated at http://tool.chinaz.com/robots/ 
+User-agent: *
+Disallow: 
+Disallow: /bin/
+Disallow: /public/
+
+Sitemap: http:1xiaoka.com/sitemap.html

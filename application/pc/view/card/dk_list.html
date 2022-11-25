@@ -1,0 +1,67 @@
+{include file='common/headers' /}
+<body style='background: white;margin: 10px 10px 10px 10px; '>
+<!-- 功能栏 -->
+
+<div style='clear:both'></div>
+
+<table class="layui-hide" id="LAY_table_user" lay-filter="LAY_table_user"></table>
+<!-- 注意：如果你直接复制所有代码到本地，上述js路径需要改成你本地的 -->
+<script>
+
+	layui.use(['table', 'form', 'upload'], function () {
+		var table = layui.table, form = layui.form;
+
+		//方法级渲染
+		table.render({
+			elem: '#LAY_table_user'
+			, url: "/pc/Card/dk_list"
+			, cols: [[
+				{field: 'id', title: '编号', unresize: true}
+				, {field: 'title', title: '点卡名称', unresize: true}
+				, {field: 'zc_profit', title: '用户费率', unresize: true}
+				, {
+					field: 'card_type', title: '卡类型', unresize: true, templet: function (d) {
+						var type = '';
+						if (d.card_type == 1) {
+							type = '话费卡';
+						} else if (d.card_type == 2) {
+							type = '游戏卡';
+						} else if (d.card_type == 3) {
+							type = '加油卡';
+						} else if (d.card_type == 4) {
+							type = '商超卡';
+						} else if (d.card_type == 5) {
+							type = '电商卡';
+						} else if (d.card_type == 6) {
+							type = '影视卡';
+						}
+						return type;
+					}
+				}
+				, {field: 'content', title: '卡密规则', unresize: true}
+			]]
+			, id: 'testReload'
+			//,page: true
+			, limit: 100
+			, done: function (res) {
+				tdTitle();
+			}
+		})
+
+		$('.search').on('click', function () {
+			//执行重载
+			table.reload('testReload', {
+				page: {
+					curr: 1 //重新从第 1 页开始
+				}
+				, where: {
+					search_name: $('#search_name').val(),
+
+				}
+			});
+		});
+	});
+</script>
+
+</body>
+</html>

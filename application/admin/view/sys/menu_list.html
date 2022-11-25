@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>音频后台管理</title>
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+  <link rel="stylesheet" href="__PUBLIC__static/admin/layuiadmin/layui/css/layui.css" media="all">
+  <link rel="stylesheet" href="__PUBLIC__static/admin/layuiadmin/style/admin.css" media="all">
+  <script src="__PUBLIC__static/admin/layuiadmin/tree/layui/layui.js"></script>
+  <script src="__PUBLIC__static/admin/js/jquery.js"></script>
+
+</head>
+<h1>
+	<span style='line-height: 40px;margin-left: 10px;'></span> 
+	<a href="/admin/sys/admin_rule_list" >
+		<button class="layui-btn layui-btn-primary layui-btn-sm">菜单列表</button>
+	</a>
+	<a href="/admin/sys/admin_rule_add" >
+		<button class="layui-btn layui-btn-primary layui-btn-sm">菜单创建</button>
+	</a>
+</h1>
+ <h2>
+<style type="text/css">
+	.layui-table-header th{
+		text-align: center;
+	}
+	.layui-table-box{
+		text-align: center;
+	}
+	.laytable-cell-1-5{
+		height: 30px;
+	}
+	body{
+        margin:10px 10px 10px 10px;
+        padding: 10px 10px 10px 10px;
+		background-color: white;
+	}
+	.layui-form{
+		margin-left: 15px;
+	}
+</style>
+<table  class="layui-hide"  lay-filter="test" id='test'></table>
+<script type="text/html" id="caozuo">
+  <!-- 这里的 checked 的状态只是演示 -->
+  <input type="checkbox" name="status" value="{{d.id}}" lay-skin="switch" lay-text="使用中|已删除" lay-filter="caozuo" {{ d.status == 1 ? 'checked' : '' }}>
+</script>
+</h2>
+<script>
+
+  layui.use(['form', 'treeGrid','table'], function () {
+    var treeGrid = layui.treeGrid; //很重要
+    var table = layui.table
+		,form = layui.form;
+    treeGrid.render({
+    elem: '#test'
+    ,url:"/admin/sys/ajax_menu_list"
+    ,minwidth:1000
+    ,treeId:'id'//树形id字段名称
+    ,treeUpId:'pid'//树形父id字段名称
+    ,treeShowName:'title'//以树形式显示的字段
+    ,cols: [[
+      {field:'id', width:80, title: 'ID', sort: true,unresize: true }
+      ,{field:'sort', width:80, edit:true, title: '排序', sort: true,unresize: true }
+      ,{field:'title', width:340, title: '菜单名字', edit:true,unresize: true}
+      ,{field:'name', width:340, title: '跳转链接',unresize: true, edit:true}
+      ,{field:'status', width:120, title: '是否使用',templet: '#caozuo', unresize: true}
+    ]]
+    ,page: false
+  });
+  	//监听是否删除操作
+  	form.on('switch(caozuo)', function(obj){
+	    var id = this.value;
+	    var status=obj.elem.checked;
+	    if (status== true) {
+	    	type=1;
+	    }else{
+	    	type=0;
+	    }
+	  	$.post("/admin/sys/menu_del",{id:id,type:type},function(data){
+	  		console.log(data)
+	  	})
+  	});
+  //监听锁定操作
+  form.on('checkbox(lockDemo)', function(obj){
+    layer.tips(this.value + ' ' + this.name + '：'+ obj.elem.checked, obj.othis);
+  });
+  //监听单元格编辑
+  treeGrid.on('edit(test)', function(obj){
+    var v = obj.value //得到修改后的值
+    ,data = obj.data //得到所在行所有键值
+    ,field = obj.field; //得到字段
+    // layer.msg('[ID: '+ data.id +'] ' + field + ' 字段更改为：'+ value);
+    var id = data.id;
+    var value = $.trim(v)
+    $.post("/admin/sys/menu_add",{id:id,field:field,value:value},function(data){
+
+    })
+  });
+});
+</script>

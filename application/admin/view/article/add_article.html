@@ -1,0 +1,106 @@
+{include file='common/header' /}
+    <link rel="stylesheet" href="__PUBLIC__/static/admin/kindeditor/themes/default/default.css" />
+    <script charset="utf-8" src="__PUBLIC__/static/admin/kindeditor/kindeditor.js"></script>
+    <script charset="utf-8" src="__PUBLIC__/static/admin/kindeditor/lang/zh_CN.js"></script>
+    <style type="text/css">
+        .ke-dialog{
+            top: 148px;
+        }
+    </style>
+<div class = 'outermost'>
+<div class="layui-card-header" style='border-bottom: none;'>
+        <fieldset class="layui-elem-field layui-field-title" style="    margin-top: -7px;">
+            <legend >编辑资讯</legend>
+        </fieldset>
+    </div>
+<form class="layui-form" action="">
+
+    <div class="layui-form-item">
+        <label class="layui-form-label">标题</label>
+        <div class="layui-input-block" style="width: 670px">
+          <input type="text" name="title" id='title' value="{$item.title ? $item.title : '' }" lay-verify="required" placeholder="请输入标题" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">作者</label>
+        <div class="layui-input-inline">
+          <input type="text" name="author" id='author' value="{$item.author ? $item.author : '' }"  placeholder="请输入作者" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">所属类别</label>
+        <div class="layui-input-inline">
+            <select name="categ_id" id='categ_id' lay-verify="required" lay-search="">
+                {volist name='list' id='vo'}
+                <option value="{$vo.categ_id}" {if $item.categ_id==$vo.categ_id} selected {/if}>{$vo.categ_name}</option>
+                {/volist}
+            </select>
+        </div>
+    </div>
+	<div class="layui-form-item">
+        <label class="layui-form-label">内容</label>
+        <div class="layui-input-block">
+          <textarea class="layui-textarea" name="content" id='content' lay-verify="content" style="width:680px;height: 350px" id="LAY_demo_editor">{$item.content ? $item.content : '' }</textarea>
+        </div>
+    </div>
+    <input type="hidden" name='id' id='id' value="{$item.id}">
+    <div class="layui-form-item">
+        <div class="layui-input-block">
+          <button class="layui-btn" type='submit' lay-submit lay-filter="formDemo">立即提交</button>
+          <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+        </div>
+    </div>
+</form></div>
+
+<script>
+  //监听提交
+    layui.use(['layer', 'form', 'table'], function() {
+        var layer = layui.layer, form = layui.form, table = layui.table;
+        //监听提交
+        form.on('submit(formDemo)', function (data) {
+            $.post("/admin/Article/add_article", $('.layui-form').serialize(), function (data) {
+                if (data.code == 1) {
+                    var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+                    layer.msg(data.msg, {icon: 1});
+                    setTimeout(function () {
+                        parent.layer.close(index);
+                        //修改成功刷新父页面
+                        if ($('#id').val()) {
+                            window.parent.location.reload();
+                        } else {
+                            //添加页面直接返回上一页并刷新
+                            window.location.reload();
+                        }
+
+                    }, 1000); //再执行关闭
+
+                } else {
+                    layer.msg(data.msg, {icon: 5});
+                }
+            }, 'json')
+            return false;
+        });
+    });
+</script>
+<script>
+    KindEditor.ready(function(K){
+        kd=K.create('.tid',{
+            'resizeType':'0',
+            'items':[
+            'source','preview','|','justifyleft','justifycenter','justifyright','justifyfull',
+            ,'|','fullscreen','|','fontname', 'fontsize','forecolor', 'bold','italic', 'underline','|','image', 'multiimage','|','emoticons', 'baidumap','|','link', 'unlink'
+            ],
+        });
+    }); 
+
+    KindEditor.ready(function(K) {
+        var editor1 = K.create('textarea[name="content"]', {
+            allowFileManager : true,
+            filterMode : false,
+            afterBlur:function(){ 
+                this.sync(); 
+            }
+        });
+    });
+
+  </script>

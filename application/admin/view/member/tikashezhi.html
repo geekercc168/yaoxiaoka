@@ -1,0 +1,98 @@
+{include file='common/header' /}
+<link rel="stylesheet" href="__PUBLIC__/static/admin/kindeditor/themes/default/default.css"/>
+<script charset="utf-8" src="__PUBLIC__/static/admin/kindeditor/kindeditor.js"></script>
+<script charset="utf-8" src="__PUBLIC__/static/admin/kindeditor/lang/zh_CN.js"></script>
+<div class = 'outermost'>
+<form class="layui-form" action="">
+   
+    <div class="layui-form-item">
+        <label class="layui-form-label">选择时间</label>
+        <div class="layui-input-inline">
+          <select name="timesc" lay-verify="required" id="timesc">
+            <option value="-1">全天</option>
+            {for start="0" end="24"}
+            <option value="{$i}">每天{$i}点</option>
+            {/for}
+          </select>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">选择卡类</label>
+        <div class="layui-input-block">
+            {foreach $dk_list as $key=>$vo }
+                <input type="checkbox" name="like[{$vo.id}]" title="{$vo.title}" {if in_array($vo.id,$dkArr)} checked {/if}>
+            {/foreach}
+        </div>
+    </div>
+    <input type="hidden" name='id' id='id' value="{$uid}">
+    <div class="layui-form-item">
+        <div class="layui-input-block">
+            <button class="layui-btn" type='submit' lay-submit lay-filter="formDemo">立即提交</button>
+            <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+        </div>
+    </div>
+</form>
+</div>
+<script type="text/javascript">
+    $('#timesc').val('{$find}')
+</script>
+<script>
+    //Demo
+    layui.use('form', function () {
+        var form = layui.form;
+
+        //监听提交
+        layui.use(['layer', 'form', 'table','laydate'], function () {
+            var laydate = layui.laydate;
+            laydate.render({elem: '#time1',type: 'datetime'});
+            laydate.render({elem: '#time2',type: 'datetime'});
+            var layer = layui.layer, form = layui.form, table = layui.table;
+            //监听提交
+            form.on('submit(formDemo)', function (data) {
+                $.post("/admin/Member/tikashezhi", $('.layui-form').serialize(), function (data) {
+                    if (data.code == 1) {
+                        var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+                        layer.msg(data.msg, {icon: 1});
+                        setTimeout(function () {
+                            parent.layer.close(index);
+                            //修改成功刷新父页面
+                            if ($('#id').val()) {
+                                window.parent.location.reload();
+                            } else {
+                                //添加页面直接返回上一页并刷新
+                                window.location.reload();
+                            }
+
+                        }, 1000); //再执行关闭
+
+                    } else {
+                        layer.msg(data.msg, {icon: 5});
+                    }
+                }, 'json')
+                return false;
+            });
+        });
+    });
+</script>
+<script>
+    KindEditor.ready(function (K) {
+        kd = K.create('.tid', {
+            'resizeType': '0',
+            'items': [
+                'source', 'preview', '|', 'justifyleft', 'justifycenter', 'justifyright', 'justifyfull',
+                , '|', 'fullscreen', '|', 'fontname', 'fontsize', 'forecolor', 'bold', 'italic', 'underline', '|', 'image', 'multiimage', '|', 'emoticons', 'baidumap', '|', 'link', 'unlink'
+            ],
+        });
+    });
+
+    KindEditor.ready(function (K) {
+        var editor1 = K.create('textarea[name="content1"]', {
+            allowFileManager: true,
+            filterMode: false,
+            afterBlur: function () {
+                this.sync();
+            }
+        });
+    });
+
+</script>

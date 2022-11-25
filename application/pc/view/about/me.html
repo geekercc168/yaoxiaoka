@@ -1,0 +1,62 @@
+{include file="./common/header"}
+<link rel="stylesheet" type="text/css" href="/public/pc/css/about.css?v=2021"/>
+<link rel="stylesheet" type="text/css" href="/public/pc/css/about.css?v=2021"/>
+<link href="/public/pc/new/css/bootstrap.css" rel="stylesheet">
+<link href="/public/pc/new/css/style.css" rel="stylesheet">
+<header>
+    <!-- Fixed navbar -->
+    <nav class="navbar navbar-default navbar-fixed-top small-nav"  style="margin-top:0px;">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false"
+                 aria-controls="navbar"><span class="sr-only">Toggle navigation</span><span class="icon-bar"></span><span class="icon-bar"></span><span
+                     class="icon-bar"></span></button>
+                <p class="logo_box" style="background-color:unset">
+                    <a href="javascript:;">
+                        <img src="/public/pc/images/nologo6.png" class="logo" alt="">
+                    </a>
+                </p>
+            </div>
+            <div id="navbar" class="navbar-collapse collapse">
+                <ul class="nav navbar-nav navbar-nav-c">
+                    <li><a href="/">首页</a></li>
+                   
+                    <li class="dropdown">
+                        {if $Think.session.uid}
+                            <a href="/yk_card.html">我要销卡</a>
+                        {else}
+                            <a href="/sign/in">我要销卡</a>
+                        {/if}
+                    </li>
+                    
+                    <li><a href="/me">联系我们</a></li>
+                    {if $Think.session.uid}
+                        <li class="dropdown"><a href="/user">个人中心</a>
+                            <a href="javascript:;" id="app_menudown" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><span class="glyphicon glyphicon-menu-down btn-xs"></span></a>
+                            <ul class="dropdown-menu nav_small" role="menu" style="display: none;">
+                                <li><a href="/yk_card">我要售卡</a></li>
+                                <li><a href="/user/cash">我要提现</a></li>
+                                <li><a href="/user/profile">账户管理</a></li>
+                                <li><a href="/sign/out">退出账户</a></li>
+                            </ul>
+                       </li>
+                    {else}
+                      <li class="dropdown"><a href="/sign/in">登录/注册</a></li>
+                    {/if}
+                </ul>
+            </div>
+            <!--/.nav-collapse -->
+        </div>
+    </nav>
+    
+</header>
+<div style="height:80px;clear:both"></div>
+<div class="about_banner">
+    <div class="main_title_white"><p class="p1">COMPANY PROFILE</p><p class="p2">公司简介</p><div class="title_line_white"></div></div>
+</div>
+<div class="container" style="padding: 15px">
+    &nbsp;&nbsp;&nbsp;&nbsp;深圳宏信智联科技有限公司自主开发的要销卡数字卡密交易平台，致力于为会员提供专业、稳定、安全、便捷的卡类回收服务。直接面对用户回收，足不出户即可提交卡号卡密完成回收交易，让企业置闲、员工福利、亲友相赠等方式获取的礼品卡快速变现，以达到资金回流最大化。为广大用户提供安全可靠、简易操作、提现快捷的回收卡服务， 资金安全方面平台实名认证更有保障。
+
+    &nbsp;&nbsp;&nbsp;&nbsp;公司资质齐全，自成立以来始终坚持以诚为本、以信立人，秉承客户至上、服务第一的经营理念，为客户提供专业、贴心、周到的服务； "互利互惠、合作共赢"是宏信智联的企业发展宗旨，宏信智联愿与广大客户共同建立良好的合作环境。 
+</div>
+{include file="./common/footer"}

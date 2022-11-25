@@ -1,0 +1,4 @@
+<?php
+//000000000000
+ exit();?>
+a:5:{i:0;a:5:{s:10:"submenu_id";i:1;s:12:"submenu_name";s:12:"我的账户";s:9:"menu_name";s:0:"";s:9:"listorder";i:0;s:6:"status";i:1;}i:1;a:5:{s:10:"submenu_id";i:2;s:12:"submenu_name";s:12:"我要卖卡";s:9:"menu_name";s:9:"card?au=1";s:9:"listorder";i:1;s:6:"status";i:1;}i:2;a:5:{s:10:"submenu_id";i:3;s:12:"submenu_name";s:12:"订单管理";s:9:"menu_name";s:0:"";s:9:"listorder";i:3;s:6:"status";i:1;}i:3;a:5:{s:10:"submenu_id";i:4;s:12:"submenu_name";s:12:"财务管理";s:9:"menu_name";s:0:"";s:9:"listorder";i:4;s:6:"status";i:1;}i:4;a:5:{s:10:"submenu_id";i:13;s:12:"submenu_name";s:12:"安全中心";s:9:"menu_name";s:0:"";s:9:"listorder";i:6;s:6:"status";i:1;}}

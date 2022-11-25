@@ -1,0 +1,50 @@
+{include file="./common/headers"}
+<style>
+    .layui-input{
+        border: none;
+    }
+</style>
+<div class = 'outermost'>
+    <div class="layui-form-item">
+        <label class="layui-form-label">用户编号：</label>
+        <div class="layui-input-inline">
+            <input type="text" value="{$uinfo.id}" autocomplete="off" class="layui-input" readonly>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">用户名：</label>
+        <div class="layui-input-inline">
+            <input type="text" value="{$uinfo.username}" autocomplete="off" class="layui-input" readonly>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">姓名：</label>
+        <div class="layui-input-inline">
+           <input type="text" value="{$uinfo.truename}" autocomplete="off" class="layui-input" readonly>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">邮箱：</label>
+        <div class="layui-input-inline">
+          <input type="text" value="{$uinfo.email}" autocomplete="off" class="layui-input" readonly>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">身份证号：</label>
+        <div class="layui-input-inline">
+            <input type="text" value="{$uinfo.idcard}" autocomplete="off" class="layui-input" readonly>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">手机号码：</label>
+        <div class="layui-input-inline">
+            <input type="text" value="{$uinfo.mobile}" autocomplete="off" class="layui-input" readonly>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">QQ号码：</label>
+        <div class="layui-input-inline">
+            <input type="text" value="{$uinfo.qq}" autocomplete="off" class="layui-input" readonly>
+        </div>
+    </div>
+</div>

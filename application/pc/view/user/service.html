@@ -1,0 +1,29 @@
+{include file="./common/header"}
+<div>
+    <!--引入导航-->
+    {include file="./common/nav"}
+    <!--内容-->
+    <div class="centent">
+        <div class="cen_left">
+            {include file="./common/user_nav"}
+        </div>
+
+        <div class="cen_right">
+            <div class="cen_right_a">
+                联系客服
+            </div>
+            {volist name="list" id="vo"}
+            <div class="cen_right_b">
+                <div>{$i}号客服</div>
+                <div>手机：{$vo.phone}</div>
+                <div>QQ：{$vo.qq} 群号：{$vo.qq_group}</div>
+                <div>邮箱：{$vo.mail}</div>
+                <p class="clear"></p>
+            </div>
+            {/volist}
+        </div>
+
+    </div>
+    <p class="clear"></p>
+</div>
+{include file="./common/footer"}

@@ -1,0 +1,81 @@
+<!--底部-->
+<style>
+      footer {
+        text-align: center;
+        background-color: #4b4b4a;
+        color: #ababa8;
+        padding: 20px 0px 20px 0px;
+        margin-top: 20px;
+        font-size: 13px;
+    }
+    .copyright a {
+        color: #ababa8;
+    }
+</style>
+
+<footer>
+    <div class="copyright">
+        <p><a target="cyxyv" href="https://v.yunaq.com/certificate?domain=www.1xiaoka.com&from=label&code=90030"> <img src="https://aqyzmedia.yunaq.com/labels/label_sm_90030.png"></a></p>
+        <br>
+        <p class="copyright_p"><p>版权所有：深圳宏信智联 <img src="/public/pc/images/gwab.png">
+        <a target="_blank" href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=44030402004298">粤公网安备：44030402004298号</a> <a target="_blank" href="https://beian.miit.gov.cn/#/Integrated/index">ICP证：粤ICP备2020113587号</a> </p>增值电信业务经营许可证编号：粤B2-20211158</p>
+            
+        <p class="copyright_p">
+            <a href="http://1xiaoka.com/sitemap.html">要销卡平台-提供充值卡回收|点卡回收</a>，
+            <a href="http://1xiaoka.com/sitemap.html">充值卡兑换|点卡兑换，</a>
+            <a href="http://1xiaoka.com/sitemap.html">充值卡/点卡寄售，充值卡/点卡api接口，充值卡/点卡回收平台</a>
+        </p>
+    </div>
+</footer>
+<script type="text/javascript">
+    
+    var pos = function (event) {  //鼠标定位赋值函数
+        var posX = 0, posY = 0;  //临时变量值
+        var e = event || window.event;  //标准化事件对象
+        if (e.pageX || e.pageY) {  //获取鼠标指针的当前坐标值
+            posX = e.pageX;
+            posY = e.pageY;
+        } else if (e.clientX || e.clientY) {
+            posX = event.clientX + document.documentElement.scrollLeft + document.body.scrollLeft;
+            posY = event.clientY + document.documentElement.scrollTop + document.body.scrollTop;
+        }
+        sessionStorage.setItem("cookieLogin", posX.toString()+posY.toString());
+        var d = new Date();
+        sessionStorage.setItem("passTime", d.getTime());
+       
+    }
+
+    // var div1 = document.getElementById("div1");
+    document.onmousemove = function () {
+        pos();
+    }
+    
+    function saveCookie(){
+        let _cookieLogin = sessionStorage.getItem("cookieLogin");
+        
+        let _passTime = sessionStorage.getItem("passTime");
+
+        let _d = new Date();
+        let _now = _d.getTime();
+        var _uuid = "{$_SESSION['think']['uid']}";
+
+        let _time = parseInt(_now) - parseInt(_passTime);
+        console.log(_time)
+        if(_time >= 30*1000*60){
+            $.get('/pc/index/onlineCount',{uid:_uuid},function(res){
+                console.log(res);
+            },'json')
+        }else{
+            $.get('/pc/index/onlineCount',{uid:_uuid,redis_time:'yxk'},function(res){
+                console.log(res);
+            },'json');
+        }
+        
+    }
+    var _uuid = "{$_SESSION['think']['uid']}";
+    if(_uuid > 0 ){
+       setInterval(saveCookie, 10000); 
+    }
+    
+</script>
+</body>

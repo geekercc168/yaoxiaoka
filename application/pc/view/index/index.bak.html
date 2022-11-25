@@ -1,0 +1,276 @@
+{include file="./common/header"}
+<link rel="stylesheet" type="text/css" href="/public/pc/css/swiper.min.css" />
+<link rel="stylesheet" type="text/css" href="/public/pc/css/style.css?v=20211"/>
+<!--引入导航-->
+<style type="text/css">
+    .jaja-ui > li >a:hover{color: #ffffff;}
+</style>
+<section class="section1">
+    <div class="se1_bg1"></div>
+    <div class="se1_bg2"></div>
+    <div class="container">
+        <header>
+            <div class="h_left"><img src="/public/pc/images/nologo6.png" alt="要销卡logo"></div>
+
+
+            {if $Think.session.uid}
+            <div class="header_btn"><a href="/user" class="login_btn">个人中心</a>
+                <ul class="user_nav" style="display: none; height: 176px; padding-top: 0px; margin-top: 0px; padding-bottom: 0px; margin-bottom: 0px;">
+                    <li><a href="/yk_card">我要售卡</a></li>
+                    <li><a href="/user/cash">我要提现</a></li>
+                    <li><a href="/user/profile">账户管理</a></li>
+                    <li><a href="/sign/out">退出账户</a></li>
+                </ul>
+            </div>
+            {else}
+            <a href="/sign/in" class="login_btn">登录/注册</a>
+            {/if}
+            <nav>
+                <ul class="jaja-ui">
+                    <li class="active"><a href="/">首页</a></li>
+                    <li class="sell_show"><a href="javascript:;" onclick="card_rate_query()">平台费率</a></li>
+                    <li class="sell_show">
+                        {if $Think.session.uid}
+                            <a href="/yk_card.html">我要销卡</a>
+                        {else}
+                            <a href="/sign/in">我要销卡</a>
+                        {/if}
+                        <div class="sell_nav">
+                            <ul>
+                                <li class="type_bg1" onclick="location.href='/yk_card?tid=1'">
+                                    <div><i class="iconfont icon-smartphone-fill"></i></div>
+                                    <h3>话费卡</h3>
+                                    <p>移动/联通/电信..</p></li>
+                                <li class="type_bg2" onclick="location.href='/yk_card?tid=2'">
+                                    <div><i class="iconfont icon-gamepad-fill"></i></div>
+                                    <h3>游戏卡</h3>
+                                    <p>骏网/九游/网易/完美..</p></li>
+                                <li class="type_bg3" onclick="location.href='/yk_card?tid=3'">
+                                    <div><i class="iconfont icon-gas-station-fill"></i></div>
+                                    <h3>加油卡</h3>
+                                    <p>中石化/中石油..</p></li>
+                                <li class="type_bg4" onclick="location.href='/yk_card?tid=4'">
+                                    <div><i class="iconfont icon-store--fill"></i></div>
+                                    <h3>商超卡</h3>
+                                    <p>中欣/沃尔玛/家乐福..</p></li>
+                                <li class="type_bg5" onclick="location.href='/yk_card?tid=5'">
+                                    <div><i class="iconfont icon-shopping-cart-fill"></i></div>
+                                    <h3>电商卡</h3>
+                                    <p>京东/苏宁/天猫/美团..</p></li>
+                                <li class="type_bg6" onclick="location.href='/yk_card?tid=6'">
+                                    <div><i class="iconfont icon-movie--fill"></i></div>
+                                    <h3>影视卡</h3>
+                                    <p>京东/苏宁/天猫/美团..</p></li>
+                            </ul>
+                        </div>
+                    </li>
+
+                    <!--                    <li><a href="/invite.html">邀请有礼</a></li>-->
+<!--                    <li><a href="/help/gzh">公众号</a></li>-->
+                    <!--                    <li><a href="/help/app">下载APP</a></li>-->
+                    <!--                    <li><a href="/help/wenti.html">帮助</a></li>-->
+                </ul>
+            </nav>
+        </header>
+        <div class="se1_left">
+            <!--<h1>灵活售卡,官方护航<br>让闲置回归价值</h1>-->
+            <h1>专业、稳定<br>安全、便捷</h1>
+            <!--<p>千万用户100%信赖之选 | 高价格，到账快 | 我们用心，您才更放心</p>-->
+            <p>专业回收，值得信赖 | 携手共进，同享共赢</p>
+            {if $Think.session.uid}
+               
+                 <a href="/yk_card">我要回收<img src="/public/pc/images/right_icon1.png" height="20" alt="箭头图标"></a>
+            {else}
+                
+                 <a href="/sign/in">我要回收<img src="/public/pc/images/right_icon1.png" height="20" alt="箭头图标"></a>
+            {/if}
+           
+        </div>
+<!--        <div class="se1_right animated fadeInUp"></div>-->
+        <!--<div class="se1_right"><img src="/public/pc/picture/qrcode1.jpg" alt="二维码" width="200"><br>微信扫码关注 手机端自助销卡</div>-->
+        <div class="se1_right" style="font-weight: 800;line-height: 34px;top: 118px;
+    width: 500px;border:0px;border-radius:0px;"><br>   深圳宏信智联科技有限公司自主开发的要销卡数字卡密交易平台，致力于为会员提供专业、稳定、安全、便捷的卡类回收服务。直接面对用户回收，足不出户即可提交卡号卡密完成回收交易，让企业置闲、员工福利、亲友相赠等方式获取的礼品卡快速变现，以达到资金回流最大化。为广大用户提供安全可靠、简易操作、提现快捷的回收卡服务， 资金安全方面平台实名认证更有保障。     公司资质齐全，自成立以来始终坚持以诚为本、以信立人，秉承客户至上、服务第一的经营理念，为客户提供专业、贴心、周到的服务； "互利互惠、合作共赢"是宏信智联的企业发展宗旨，宏信智联愿与广大客户共同建立良好的合作环境。</div>
+    </div>
+
+</section>
+
+
+<div class="container">
+    <div class="notice">
+        <div class="notice_img"><img src="/public/pc/images/ptgg.png" alt="平台公告"></div>
+        <div class="notice_txt swiper-container">
+            <div class="swiper-wrapper">
+                {foreach $notice as $v}
+                <a  href="/ninfo/t/1/id/{$v.id}" target="_blank" class="swiper-slide">
+                    <h1><img src="/public/pc/images/gg_icon.png" alt="公告图标">{$v.title}</h1>
+                    <p>{$v.content}</p>
+                    <div class="notice_date"><p class="p1">{:date('m-d',$v.pub_time)}</p><p class="p2">{:date('Y',$v.pub_time)}</p></div>
+                </a>
+                {/foreach}
+            </div>
+        </div>
+        <a href="#" onclick="n_list('公告列表','notice')" class="notice_more">更多<br>公告</a>
+    </div>
+    <div class="step">
+        <ul>
+            <li>
+                <div class="step_img"><img src="/public/pc/images/step01.png" alt="1"></div>
+                <div class="step_icon"><img src="/public/pc/images/step_a.png" alt="注册">注册认证</div>
+            </li>
+            <li>
+                <div class="step_img"><img src="/public/pc/images/step02.png" alt="2"></div>
+                <div class="step_icon"><img src="/public/pc/images/step_b.png" alt="提卡">提交验卡</div>
+            </li>
+            <li>
+                <div class="step_img"><img src="/public/pc/images/step03.png" alt="3"></div>
+                <div class="step_icon"><img src="/public/pc/images/step_c.png" alt="资金">资金到账</div>
+            </li>
+            <li>
+                <div class="step_img"><img src="/public/pc/images/step04.png" alt="4"></div>
+                <div class="step_icon"><img src="/public/pc/images/step_d.png" alt="账户">账户提现</div>
+            </li>
+        </ul>
+        <div class="clear"></div>
+    </div>
+    <div class="line_mid"></div>
+</div>
+<div class="container">
+    <div class="main_title"><p class="p1">OUR PARTNER</p>
+        <p class="p2">支持卡类</p>
+        <div class="title_line"></div>
+        <p class="p3">官方合作，为用户提供更有保障的销卡服务</p></div>
+    <div class="team_img">
+        <div class="centered">
+            {if $Think.session.uid}
+                
+                <a href="/yk_card">
+                    <img class="img" src="public/pc/picture/1.png" alt="">
+                </a>
+            {else}
+                
+                <a href="/sign/in">
+                    <img class="img" src="public/pc/picture/1.png" alt="">
+                </a>
+            {/if}
+        </div>
+        <div class="centered">
+           
+            {if $Think.session.uid}
+                
+                <a href="/yk_card">
+                    <img class="img" src="public/pc/picture/2.png" alt="">
+                </a>
+            {else}
+                
+                <a href="/sign/in">
+                    <img class="img" src="public/pc/picture/2.png" alt="">
+                </a>
+            {/if}
+        </div>
+        <div class="centered">
+            
+            {if $Think.session.uid}
+                
+                <a href="/yk_card">
+                    <img class="img" src="public/pc/picture/3.png" alt="">
+                </a>
+            {else}
+                
+                <a href="/sign/in">
+                    <img class="img" src="public/pc/picture/3.png" alt="">
+                </a>
+            {/if}
+        </div>
+    </div>
+</div>
+<div class="container team_img" style="padding: 0">
+    <div class="i_notice">
+        <div class="i_item" style="background-color: white; padding: 20px 20px; padding-bottom: 0; margin-bottom: 0">
+            <div class="title" style="">常见问题 <a href="#" onclick="n_list('常见问题','question')" style="color: #007aff; float: right">MORE+</a>
+            </div>
+        </div>
+        <div class="desc" style="margin-top: 30px">
+            {foreach $question as $v}
+            <div style="border-bottom: 1px #CCCCCC dotted; line-height: 35px" title="点卡寄售">
+                <a  href="/ninfo/t/2/id/{$v.id}" target="_blank" title="{$v.title}"><span
+                        style="color: #007aff">▶</span>{$v.title}</a>
+                <span style="float: right">[{:date('Y-m-d',$v.pub_time)}]</span>
+            </div>
+            {/foreach}
+        </div>
+    </div>
+    <div class="i_notice">
+        <div class="i_item" style="background-color: white; padding: 20px 20px; padding-bottom: 0; margin-bottom: 0">
+            <div class="title" style="">行业资讯 <a href="#" onclick="a_list()" style="color: #007aff; float: right">MORE+</a>
+            </div>
+        </div>
+        <div class="desc" style="margin-top: 30px">
+            {foreach $article as $v}
+            <div style="border-bottom: 1px #CCCCCC dotted; line-height: 35px" title="点卡寄售">
+                <a  href="/ninfo/t/3/id/{$v.id}" target="_blank" title="{$v.title}"><span
+                        style="color: #007aff">▶</span>{$v.title}</a>
+                <span style="float: right">[{:date('Y-m-d',$v.pub_time)}]</span>
+            </div>
+            {/foreach}
+
+        </div>
+    </div>
+
+</div>
+<style>
+    .ceshi {
+        width: 600px;
+        height: 300px;
+    }
+</style>
+
+{include file="./common/footer"}
+<script src="/public/pc/js/swiper.min.js" type="text/javascript" charset="utf-8"></script>
+</html>
+<script>
+    var mySwiper = new Swiper ('.notice_txt', {
+        direction: 'vertical', // 垂直切换选项
+        loop: true, // 循环模式选项
+        autoplay:true,//等同于以下设置
+    })
+    // let noticeSwiper = new Swiper('.notice_txt', {
+    //     autoplay: 3000,
+    //     direction : 'vertical',
+    // });
+    // $('.sell_show').hover(function () {
+    //     $('.sell_nav').stop().slideToggle(200);
+    // });
+</script>
+
+<script>
+    function n_list(title,type) {
+        layer.open({
+            type: 2,
+            title:title,
+            shadeClose: true,
+            area: ['90%', '90%'],
+            shade: 0.8,
+            content: '/'+type,
+        });
+    }
+    function a_list() {
+        layer.open({
+            type: 2,
+            title:'资讯列表',
+            shadeClose: true,
+            area: ['90%', '90%'],
+            shade: 0.8,
+            content: '/article',
+        });
+    }
+    function card_rate_query() {
+        layer.open({
+            type: 2,
+            title:'平台费率',
+            shadeClose: true,
+            area: ['90%', '90%'],
+            shade: 0.8,
+            content: '/pc/help/card_rate_query',
+        });
+    }
+</script>

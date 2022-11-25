@@ -1,0 +1,105 @@
+{include file='common/header' /}
+<link rel="stylesheet" href="__PUBLIC__/static/admin/kindeditor/themes/default/default.css"/>
+<script charset="utf-8" src="__PUBLIC__/static/admin/kindeditor/kindeditor.js"></script>
+<script charset="utf-8" src="__PUBLIC__/static/admin/kindeditor/lang/zh_CN.js"></script>
+<div class = 'outermost'>
+<div class="layui-card-header" style='border-bottom: none;'>
+    <fieldset class="layui-elem-field layui-field-title" style="    margin-top: -7px;">
+        <legend>编辑</legend>
+    </fieldset>
+</div>
+<form class="layui-form" action="">
+
+    <div class="layui-form-item">
+        <label class="layui-form-label">标题</label>
+        <div class="layui-input-block" style="width: 670px">
+            <input type="text" name="title" id='title' value="{$item.title ? $item.title : '' }" lay-verify="required"
+                   placeholder="请输入标题" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+<!--    <div class="layui-form-item">-->
+<!--        <label class="layui-form-label">是否置顶</label>-->
+<!--        <div class="layui-input-block" style='line-height: 36px;'>-->
+<!--            <div class='states'>-->
+<!--                <input name="is_top" {if $data.is_top eq 1} checked{/if} id="is_top" type="radio" class="ace" value="0">-->
+<!--                <span class="lbl">是</span>-->
+<!--            </div>-->
+<!--            <div class='states'>-->
+<!--                <input name="is_top" {if $data.is_top eq 2} checked{/if} id="is_top" type="radio" class="ace" value="1">-->
+<!--                <span class="lbl">否</span>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </div>-->
+    <div class="layui-form-item">
+        <label class="layui-form-label">内容</label>
+        <div class="layui-input-block">
+            <textarea class="layui-textarea" name="content" id='content' lay-verify="content" style="width:670px;height: 300px">{$item.content ? $item.content : '' }</textarea>
+        </div>
+    </div>
+    <input type="hidden" name='id' id='id' value="{$item.id}">
+    <div class="layui-form-item">
+        <div class="layui-input-block">
+            <button class="layui-btn" type='button' lay-submit lay-filter="formDemo">立即提交</button>
+            <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+        </div>
+    </div>
+</form>
+</div>
+
+<script>
+    //Demo
+    layui.use('form', function () {
+        var form = layui.form;
+
+        //监听提交
+        layui.use(['layer', 'form', 'table'], function () {
+            var layer = layui.layer, form = layui.form, table = layui.table;
+            //监听提交
+            form.on('submit(formDemo)', function (data) {
+                $.post("/admin/Article/add_question", $('.layui-form').serialize(), function (data) {
+                    if (data.code == 1) {
+                        var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+                        layer.msg(data.msg, {icon: 1});
+                        setTimeout(function () {
+                            parent.layer.close(index);
+                            //修改成功刷新父页面
+                            if ($('#id').val()) {
+                                window.parent.location.reload();
+                            } else {
+                                //添加页面直接返回上一页并刷新
+                                window.location.reload();
+                            }
+
+                        }, 1000); //再执行关闭
+
+                    } else {
+                        layer.msg(data.msg, {icon: 5});
+                    }
+                }, 'json')
+                return false;
+            });
+        });
+    });
+</script>
+<script>
+    KindEditor.ready(function (K) {
+        kd = K.create('.tid', {
+            'resizeType': '0',
+            'items': [
+                'source', 'preview', '|', 'justifyleft', 'justifycenter', 'justifyright', 'justifyfull',
+                , '|', 'fullscreen', '|', 'fontname', 'fontsize', 'forecolor', 'bold', 'italic', 'underline', '|', 'image', 'multiimage', '|', 'emoticons', 'baidumap', '|', 'link', 'unlink'
+            ],
+        });
+    });
+
+    KindEditor.ready(function (K) {
+        var editor1 = K.create('textarea[name="content"]', {
+            allowFileManager: true,
+            filterMode: false,
+            afterBlur: function () {
+                this.sync();
+            }
+        });
+    });
+
+</script>

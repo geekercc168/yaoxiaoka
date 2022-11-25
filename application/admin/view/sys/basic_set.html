@@ -1,0 +1,167 @@
+{include file='common/header' /} 
+    <link rel="stylesheet" href="__PUBLIC__/static/admin/kindeditor/themes/default/default.css" />
+    <script charset="utf-8" src="__PUBLIC__/static/admin/kindeditor/kindeditor.js"></script>
+    <script charset="utf-8" src="__PUBLIC__/static/admin/kindeditor/lang/zh_CN.js"></script>
+<style type="text/css">
+    body{
+        margin:10px 10px 10px 10px;
+        padding: 10px 10px 10px 10px;
+        background-color: white;
+    }
+    .layui-form{
+        width: 1100px;
+        padding-top: 10px;
+    }
+    .layui-form-label{
+        width: 100px;
+        float: left;
+    }
+    .layui-input-block{
+        margin-left: 0px;
+        width: 570px;
+        float: left;
+    }
+    .layui-form-mid{
+        margin-left: 15px;
+    }
+    .red{
+    	color:red;
+    }
+</style>
+<fieldset class="layui-elem-field layui-field-title" style="">
+    <legend >基本设置</legend>
+</fieldset>
+<form class="layui-form"  method="post"  action="" enctype="multipart/form-data">
+    
+    <div class="layui-form-item">
+        <label class="layui-form-label">站点名称</label>
+        <div class="layui-input-block">
+          <input type="text" name="site_name" id='site_name' value="{$sys.site_name}" placeholder="输入标题" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">网站域名</label>
+        <div class="layui-input-block">
+          <input type="text" name="site_host" id='site_host' value="{$sys.site_host}" placeholder="输入标题" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">备案信息</label>
+        <div class="layui-input-block">
+          <input type="text" name="site_icp" id='site_icp' value="{$sys.site_icp}" placeholder="输入标题" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">统计代码</label>
+        <div class="layui-input-block">
+          <input type="text" name="site_tongji" id='site_tongji' value="{$sys.site_tongji}" placeholder="输入标题" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">版权信息</label>
+        <div class="layui-input-block">
+          <textarea class="layui-textarea" name="site_copyright" lay-verify="content" style="width:960px;height:300px;" id="LAY_demo_editor">{$sys.site_copyright}</textarea>
+        </div>
+    </div>
+    <div class="layui-form-item" style='width: 335px;float: left;'>
+        <label class="layui-form-label">网站logo设置</label>
+        <div class="layui-input-inline">
+            <div class="layui-upload" style='width: 200px;'>
+                <input style='width: 370px; float: left; ' type="hidden" class="layui-input" id="img" name="path" placeholder="可填写可上传" value="">
+                <input style='width: 370px; float: left; ' type="hidden" class="layui-input" id='old_path' name="old_path" placeholder="可填写可上传" value="{$info.img? $info.img : '' }">
+                <!-- <button  type="button" class="layui-btn" id="upload_pic">上传图片</button> -->
+                <div class="layui-upload-list">
+                    {if condition="empty($info.img)"}
+                        <img class="layui-upload-img upload_pic" id="demo" style="width:240px;height:60px;" >
+                    {else /}
+                        <img class="layui-upload-img upload_pic" id="demo" src="{$info.img}" style="width:240px;height:60px;" >
+                    {/if}
+                    
+                </div>
+            </div> 
+        </div>
+    </div> 
+   <!--<div class="layui-form-item">
+        <label class="layui-form-label">web阅读章节数量</label>
+        <div class="layui-input-block">
+          <input type="text" name="num" id='num' value="{$sys.num}" placeholder="" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item" style='position: absolute; margin-left: 395px;'>
+        <label class="layui-form-label">logo跳转链接</label>
+        <div class="layui-input-block">
+          <input type="text" name="hrefs" id='hrefs' value="{$info.hrefs? $info.hrefs : '' }" placeholder="输入标题" autocomplete="off" class="layui-input">
+        </div>
+    </div>-->
+    <div class="layui-form-item">
+        <label class="layui-form-label">站点状态</label>
+        <div class="layui-input-block" style='width:80px;'>
+          <input type="checkbox" value='1' {if condition="$sys.status eq 1"}checked{/if} lay-skin="switch" lay-filter="yuebi" lay-text="开启|关闭">
+          <input type='hidden' value="{$sys.status}" id='yuebi' name='status' >
+      </div>
+      <div class="layui-form-mid layui-word-aux"><span style='color: red;'>*</span>站点关闭后网站不能访问！</div>
+  </div>
+    <div class="layui-form-item">
+        <div class="layui-input-block" style='margin-left: 60px'>
+          <button class="layui-btn" type='submit' lay-submit lay-filter="formDemo">立即提交</button>
+          <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+        </div>
+    </div>
+</form>
+
+<script>
+//Demo
+layui.use(['layer', 'form','upload','layedit'], function(){
+    var layer = layui.layer
+    var form = layui.form
+    var upload = layui.upload
+    var layedit = layui.layedit
+    form.on('switch(yuebi)', function(obj){
+    var id = this.value;
+    var status=obj.elem.checked;
+    if (status== true) {
+        $('#yuebi').val(1)
+    }else{
+        $('#yuebi').val(2)
+    }
+  });
+    //普通图片上传
+    upload.render({
+        elem: '.upload_pic'
+        ,url: "/admin/menu/banner_upload"
+        ,before: function(obj){
+            layer.msg('上传中',{icon:16,time:false});
+                obj.preview(function(index, file, result){
+                    $('#demo').attr('src', result); //图片链接（base64）
+                });
+        }
+        ,done: function(res){
+            $('#img').val(res.data.src);
+            layer.closeAll();
+        }
+    })
+});
+
+</script>
+<script>
+    KindEditor.ready(function(K){
+        kd=K.create('.tid',{
+            'resizeType':'0',
+            'items':[
+            'source','preview','|','justifyleft','justifycenter','justifyright','justifyfull',
+            ,'|','fullscreen','|','fontname', 'fontsize','forecolor', 'bold','italic', 'underline','|','image', 'multiimage','|','emoticons', 'baidumap','|','link', 'unlink'
+            ],
+        });
+    }); 
+
+    KindEditor.ready(function(K) {
+        var editor1 = K.create('textarea[name="site_copyright"]', {
+            allowFileManager : true,
+            filterMode : false,
+            afterBlur:function(){ 
+                this.sync(); 
+            }
+        });
+    });
+
+  </script>

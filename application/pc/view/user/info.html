@@ -1,0 +1,199 @@
+{include file='common/headers'/}
+<style>
+    .balance_card{
+        height: inherit;
+    }
+</style>
+<link rel="stylesheet" type="text/css" href="/public/pc/css/swiper.min.css" />
+<div class="right">
+
+    <div class="layui-fluid layadmin-homepage-fluid">
+        <div class="layui-row layui-col-space8">
+            <div class="layui-col-md12">
+                <div class="layadmin-homepage-panel layadmin-homepage-shadow">
+                    <div class="layui-card text-center">
+                        <div class="layui-card-body">
+                            <div class="user_come">欢迎你，<span>{$uinfo.username}</span></div> 
+                            <div class="login_log">您的ID:{$uinfo.id}</div>
+                            <div class="acc_safe">账户安全
+                                <div class="safe_lv" style="background: #fff">
+                                    <div class="layui-progress">
+                                        <div class="layui-progress-bar layui-bg-blue" lay-percent="{$bl}%"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="layui-col-md8">
+                                <div class="layui-col-md2">
+                                    <a class="{if $is_truename!=1}not_set{/if}" href="#" onclick="newTab('/pc/User/auth_name','实名认证')"><img src="/public/pc/images/user_icon1.png" alt="">实名认证</a>
+                                </div>
+                                <div class="layui-col-md2">
+                                    <a class="{if $uinfo.email}{else}not_set{/if}" href="#"><img src="/public/pc/images/user_icon2.png" alt="">邮箱绑定</a>
+                                </div>
+                                <div class="layui-col-md2">
+                                    <a class="{if $uinfo.tx_pwd}{else}not_set{/if}" href="#" onclick="newTab('/pc/user/setpwd','修改密码')"><img src="/public/pc/images/user_icon3.png" alt="">密码保护</a>
+                                </div>
+                            </div>
+                            <div class="clear"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-col-md12">
+                <div class="layui-col-md12">
+                    <div class="layadmin-homepage-panel layadmin-homepage-shadow">
+                        <div class="layui-card text-center">
+                            <div class="layui-card-body">
+                                <div class="balance_card_left_1">
+                                    <img src="/public/pc/images/cash_icon.png" alt="">
+                                </div>
+                                <div class="balance_card_left_2">
+                                    <p>账户余额（元）</p><h3>{$uinfo.zj_cash}</h3>
+                                </div>
+                                <div class="layui-col-md3">
+                                    <a href="#" onclick="newTab('/pc/Tixian/add_tx','马上提现')" class="balance_card_right_1">马上提现</a>
+                                    <a href="#" class="balance_card_right_2">提现记录</a>
+                                </div>
+                                <div class="clear"></div>
+                                
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="layui-col-md12">
+                <div class="layui-col-md12">
+                    <div class="layadmin-homepage-panel layadmin-homepage-shadow">
+                        <div class="layui-card text-center">
+                            <div class="layui-card-body">
+                                <div class="balance_card_left_1">
+                                    <img style="width: 38px;height: 35px;" src="/public/pc/images/api_icon3.png" alt="">
+                                </div>
+                                <div class="balance_card_left_2">
+                                    <p>统计经营概况</p><h4><a href="javascript:;" onclick="showStatus()">点击查看</a></h4>
+                                </div>
+                                <div class="clear"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="layui-col-md12">
+                <div class="layui-col-md12">
+                    <div class="layadmin-homepage-panel layadmin-homepage-shadow">
+                        <div class="layui-card text-center">
+                            <div class="layui-card-body">
+                                <div class="layui-col-md6">
+                                    <div class="hd_title"> 
+                                        <div class="balance_card_left_1"><img style="width: 38px;height: 35px;" src="/public/pc/images/notice-img.png" alt=""></div>
+                                        
+                                        <div class="balance_card_left_2">
+                                            <p>系统公告</p>
+                                        </div>
+                                        <a  href="#" onclick="n_list()">更多
+                                            <img src="/public/pc/images/more.png" alt="">
+                                        </a>
+                                    </div>
+                                    <div class="clear"></div>
+                                    <ul class="notice_list">
+                                        {foreach $notice as $v}
+                                        <li onclick="ninfo('{$v.id}')">
+                                            <div class="notice_list_left"><a href="#">{$v.title}
+                                            </a><p>{$v.content}</p></div>
+                                            <div class="notice_list_right"><h3>{$v.time1}</h3><p>{$v.time2}</p></div>
+                                            <div class="clear"></div>
+                                        </li>
+                                        {/foreach}
+                                    </ul>
+                                </div>
+                                <div class="clear"></div>
+                                
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+           
+        </div>
+    </div>
+
+
+
+</div>
+<style type="text/css">
+    #dsfsdf{
+        line-height: 30px;padding: 0 25px;
+    }
+</style>
+<script src="/public/pc/js/swiper.min.js" type="text/javascript" charset="utf-8"></script>
+<script>
+   
+    layui.use(['form','element'], function() {
+        var form = layui.form,element = layui.element; //Tab的切换功能，切换事件监听等，需要依赖element模块
+        var istop = "{$notice_one.is_top}";//公告置顶第一条弹出提示
+        var is_truename="{$is_truename}";//公告置顶第一条弹出提示
+        if(is_truename==1){
+            if(istop==1){
+                ninfo("{$notice_one.id}");
+            }
+        }else{
+            layer.open({
+                type: 2,
+                title: '实名认证',
+                shadeClose: true,
+                //skin: 'layui-layer-rim', //加上边框
+                area: ['100%','90%'],//宽高
+                content: '/pc/User/auth_name'
+            });
+        }
+        $('.balance_card_right_2').click(function () {
+            layer.open({
+                type: 2,
+                title: '提现记录',
+                shadeClose: true,
+                //skin: 'layui-layer-rim', //加上边框
+                area: ['100%','90%'], //宽高
+                content: '/pc/Tixian/lists'
+            });
+        })
+    })
+    function ninfo(id) {
+
+        $.get('/ninfo?id='+id, {'show':1}, function(res){
+            layer.open({
+                // type: 1,
+                title:[res.data.title, 'text-align:center'],
+                shadeClose: true,
+                area: ['100%','90%'],
+                shade: 0.8,
+                content: res.data.content,
+                btn: ''
+            });
+        });
+    }
+
+     function n_list() {
+        layer.open({
+            type: 2,
+            title:'公告列表',
+            shadeClose: true,
+            area: ['100%','90%'],
+            shade: 0.8,
+            content: '/notice',
+        });
+    }
+    
+    function showStatus(){
+        layer.open({
+            type: 2,
+            title:'统计经营概况',
+            shadeClose: true,
+            area: ['100%','90%'],
+            shade: 0.8,
+            content: '/pc/user/show_status',
+        });
+    }
+</script>
+
+

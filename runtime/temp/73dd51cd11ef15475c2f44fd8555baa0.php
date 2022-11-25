@@ -1,0 +1,514 @@
+<?php if (!defined('THINK_PATH')) exit(); /*a:4:{s:60:"/www/wwwroot/yaoxiaoka/application/pc/view/card/m_index.html";i:1627022838;s:62:"/www/wwwroot/yaoxiaoka/application/pc/view/common/mheader.html";i:1614909815;s:64:"/www/wwwroot/yaoxiaoka/application/pc/view/common/wap_beian.html";i:1623812844;s:62:"/www/wwwroot/yaoxiaoka/application/pc/view/common/mfooter.html";i:1620488383;}*/ ?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+    <title>账户概览 -要销卡-专注充值卡回收兑换_话费卡回收_游戏点卡回收_加油卡回收</title>
+    <link rel="stylesheet" type="text/css" href="/public/wap/css/iconfont.css?v=20211" />
+    <link rel="stylesheet" href="/public/wap/css/style_mobile.css?v=20211">
+    <link rel="stylesheet" href="/public/layer/theme/default/layer.css?v=20211">
+<!--    <link rel="stylesheet" href="//at.alicdn.com/t/font_1786378_3f9wkx8x2vp.css">-->
+    <script src="/public/pc/js/jquery-3.4.1.min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="/public/layer/layer.js?v=20211" type="text/javascript" charset="utf-8"></script>
+</head>
+<body>
+<body>
+<div class="main_top">我要卖卡
+    <a href="javascript:history.back(-1);"  class="back"><img src="/public/wap/img/left_icon.png" alt=""></a>
+    <a class="kf_right"><img src="/public/wap/img/kf_icon.png" alt=""></a>
+</div>
+<div class="line_h"></div>
+<form id="formId" action="/user/sell/add" method="post">
+    <input type="hidden" name="cardInfoId" value="<?php echo $tid; ?>">
+    <input type="hidden" name="cardValueId" value="0">
+    <input type="hidden" name="cardAnyValue" value="0">
+    <input type="hidden" name="submitType" value="batch">
+    <input type="hidden" name="isAnyRate" id="isAnyRate">
+    <input type="hidden" name="urgent" value="">
+    <input type="hidden"  name="confirmXY" value="yes">
+    <input type="hidden"  id="is_mobile" value="<?php echo $is_mobile; ?>">
+    <div class="select_list">
+        <ul>
+            <li class="kl_show">
+                <div class="select_list_title">卡类</div>
+                <div class="select_list_left kl"></div>
+                <div class="select_list_right"><div class="kl_icon kl_icon1"><i class="iconfont icon-shopping-cart-fill"></i></div></div>
+                <img src="/public/wap/img/right_icon.png" class="select_icon" alt="">
+            </li>
+            <li class="kz_show">
+                <div class="select_list_title">卡种</div>
+                <div class="select_list_left kz"></div>
+                <div class="select_list_right kzImg"><img src="" alt=""></div>
+                <img src="/public/wap/img/right_icon.png" class="select_icon" alt="">
+            </li>
+            <li class="mz_show">
+                <div class="select_list_title">面值</div>
+                <div class="select_list_left"><span class="mz_big">点击选择面值</span></div>
+                <div class="select_list_right mz_small"><span id="customPrice"></span>·<span class="red discount"></span></div>
+                <img src="/public/wap/img/right_icon.png" class="select_icon" alt="">
+            </li>
+            <li style="display: none" id="customRateShow">
+                <div class="select_list_title">折扣</div>
+                <div class="select_list_right"><input type="text" name="cardAnyRate" id="cardAnyRate" placeholder="" class="select_list_right_input" onkeyup="rateFormat(this)"></div>
+            </li>
+        </ul>
+    </div>
+    <div class="tip_red" id="tips">如有提交面值错误，余额恕不退还！损失自行承担！</div>
+    <div class="tab_list">
+        <a class="active" onclick="changeSubmitType(0)">批量上传</a>
+        <a onclick="changeSubmitType(1)">单张上传</a>
+    </div>
+    <div class="line_h"></div>
+    <div class="import_d">
+        <div class="up_txt">
+            <p class="tx_form_tip">已经输入<span class="red" id="lineCount">0</span>张卡，每次最多可提交1000张</p>
+            <textarea name="cardBatch" id="cardBatch" onkeydown="cardNum(this,event)" onblur="cardNum(this,'blur')" placeholder="1.单次提交只能上传同一种类同一面值的充值卡。
+    2.上传格式为： 卡号空格卡密
+    3.每输入完一张充值卡换行输入下一张。
+    （示例:123456789 987654321）"></textarea>
+        </div>
+        <div class="zl_d"><a onclick="tidyChar()" href="javascript:void(0)">整理卡密</a><p>单次提交重复卡密，系统将自动过滤</p></div>
+    </div>
+    <div class="import_d" style="display: none">
+        <div style="margin: 0 12px">
+            <div id="cardNo">
+                <div class="tx_form_3_title">卡号：</div>
+                <div class="pass_input"><input type="text" name="cardNo" placeholder="请输入卡号"></div>
+            </div>
+            <div id="cardP">
+                <div class="tx_form_3_title">卡密：</div>
+                <div class="pass_input"><input type="text" name="cardPwd" placeholder="请输入卡密"></div>
+            </div>
+        </div>
+    </div>
+    <div class="clear"></div>
+<!--    <div class="jj_d" id="urgent">-->
+<!--        <div class="agree" style="margin-left: 0"><img src="/public/wap/img/gou.png" height="6" alt=""></div>我要加急处理（9:00 - 18:00）<span class="jj_d_right red" style="display: none">手续费:1.00 元/张</span>-->
+<!--    </div>-->
+
+    <div style="margin: 0 12px">
+        <button type="button" class="qr_btn buy_btn">确认提交</button>
+    </div>
+</form>
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1786378_3f9wkx8x2vp.css">
+<!--标签栏开始-->
+<div class="tab_bar_bottom" style="margin-bottom: 27px;"></div>
+<div class="section5" style="margin-bottom: 50px"> 
+<p style="text-align: center;"><a target="cyxyv" href="https://v.yunaq.com/certificate?domain=www.1xiaoka.com&from=label&code=90030"> <img src="https://aqyzmedia.yunaq.com/labels/label_sm_90030.png"></a></p>
+	<br>
+<p style="text-align: center;font-size: 12px;color: #b3b9c7;">
+    &nbsp;&nbsp;<a target="_blank" href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=44030402004298">粤公网安备：44030402004298号</a> <br /><br />
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a target="_blank" href="https://beian.miit.gov.cn/#/Integrated/index">ICP证&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;：粤ICP备2020113587号</a>
+    
+</p>
+<!-- <p style="margin-top: 20px;line-height: 19px;">
+    要销卡平台-提供充值卡回收|点卡回收， 充值卡兑换|点卡兑换， 充值卡/点卡寄售，充值卡/点卡api接口，充值卡/点卡回收平台
+</p> -->
+
+<div class="tab_bar_nav">
+    <!--active为当前页面选中效果-->
+    <a href="/" ><i class="iconfont icon-home-smile-line"></i>首页</a>
+    <a href="/pc/user/orders"><i class="iconfont icon-file-list--fill"></i>订单</a>
+    <a href="/yk_card"><span class="home_btn"><i class="iconfont icon-maichu"></i></span></a>
+    <a href="/pc/tixian/add_tx" ><i class="iconfont icon-money-cny-circle-fill"></i>提现</a>
+    <a href="/user/profile" ><i class="iconfont icon-user--fill"></i>我的</a>
+</div>
+
+
+<!--底部弹层开始-->
+<!--底部弹层开始-->
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1786378_02usjpdi4hev.css">
+
+
+<!--底部弹层结束-->
+<div class="shell_show kl_show_modal animated slideInUp">
+    <div class="shell_show_head">请选择卡类</div>
+    <span class="close_btn"><img src="/public/wap/img/close_icon2.png" alt=""></span>
+    <div class="shell_show_kl">
+        <ul>
+            <li class="brand_1" onclick="getAllCardBrand($(this), 1, );" data-typeid="1"><i class="iconfont icon-smartphone-fill"></i><span>话费卡 </span><span class="shell_show_kl_right">移动/联通/电信..</span></li>
+            <li class="brand_2" onclick="getAllCardBrand($(this), 2, );" data-typeid="2"><i class="iconfont icon-gamepad-fill"></i><span>游戏卡 </span><span class="shell_show_kl_right">骏网/九游/网易/完美..</span></li>
+            <li class="brand_3" onclick="getAllCardBrand($(this), 3, );" data-typeid="3"><i class="iconfont icon-gas-station-fill"></i><span>加油卡 </span><span class="shell_show_kl_right">中石化/中石油..</span></li>
+            <li class="brand_4" onclick="getAllCardBrand($(this), 4, );" data-typeid="4"><i class="iconfont icon-store--fill"></i><span>商超卡 </span><span class="shell_show_kl_right">中欣/沃尔玛/家乐福..</span></li>
+            <li class="brand_5" onclick="getAllCardBrand($(this), 5, );" data-typeid="5"><i class="iconfont icon-shopping-cart-fill"></i><span>电商卡 </span><span class="shell_show_kl_right">京东/苏宁/天猫/美团..</span></li>
+            <li class="brand_6" onclick="getAllCardBrand($(this), 6, );" data-typeid="6"><i class="iconfont icon-movie--fill"></i><span>影视卡 </span><span class="shell_show_kl_right">腾讯/优酷/爱奇艺..</span></li>
+        </ul>
+    </div>
+</div>
+<div class="shell_show kz_show_modal animated slideInUp">
+    <div class="shell_show_head">请选择卡种</div>
+    <span class="close_btn"><img src="/public/wap/img/close_icon2.png" alt=""></span>
+    <div class="shell_show_kz" style="height: 500px;overflow: auto;">
+        <ul id="brand_list">
+        </ul>
+    </div>
+</div>
+<div class="shell_show mz_show_modal animated slideInUp">
+    <div class="shell_show_head">请选择单张面值</div>
+    <div class="recycle-former-tips">您所选的为单张卡的面值，请勿搞错！！！</div>
+    <span class="close_btn"><img src="/public/wap/img/close_icon2.png" alt=""></span>
+    <div class="shell_show_mz">
+        <ul id="mz_list">
+        </ul>
+    </div>
+</div>
+<!--底部弹层结束-->
+
+<!--遮罩-->
+<div class="mask">
+    <!--  重新提交弹窗  -->
+    <div class="modal tjcg_modal">
+        <div class="close"></div>
+        <div class="title_icon"><img src="/public/wap/img/acc_icon2.png" alt=""></div>
+        <div class="title_txt"><h3>提交成功</h3><p>您的卡密已经提交成功哦！</p></div>
+        <div class="clear"></div>
+        <div class="failed_list">
+            <div class="failed_cards">
+                <p class="p1"><img id="cardImg" src="" alt=""><span id="cardName"></span><span id="cardPrice"></span></p>
+                <div class="hs_right">回收价：<span class="red" id="recyclePrice"></span></div>
+            </div>
+            <ul class="dd_list">
+                <li><div>提交成功</div><div id="success"></div></li>
+                <li><div>提交失败</div><div id="waiting"></div></li>
+            </ul>
+        </div>
+        <div class="clear"></div>
+        <a class="back_btn" href="/user/trade">查看订单</a><a class="add_btn" style="float:left;width: calc(50% - 10px); line-height: 44px">继续提交</a>
+    </div>
+    <!--  自定义面值弹窗  -->
+    <div class="modal zdy_modal">
+        <div class="close"></div>
+        <div class="title_icon"><img src="/public/wap/img/dd_icon.png" height="32" alt=""></div>
+        <div class="title_txt"><h3>自定义面值</h3><p>请输入自定义卡面值</p></div>
+        <div class="clear"></div>
+        <div class="add_input" style="margin-top: 0"><input type="text" id="customValue" placeholder="请输入10~10000元的面值"></div>
+        <button class="copy_btn" onclick="setAnyValue()">确 认</button>
+    </div>
+    <!--订单确认弹窗-->
+    <div class="modal ddxq_modal">
+        <div class="close"></div>
+        <div class="title_icon"><img src="/public/wap/img/dd_icon.png" height="32" alt=""></div>
+        <div class="title_txt"><h3>订单确认</h3><p>有任何问题可联系在线客服</p></div>
+        <div class="clear"></div>
+        <div class="tip2">请确认提交面值与实际面值一致！<br>
+            如有面值错误，余额恕不退还！损失自行承担！</div>
+        <ul class="dd_list">
+            <li><div>卡类型</div><div id="type"></div></li>
+            <li><div>卡品牌</div><div id="brand"></div></li>
+            <li><div>卡数量</div><div id="count"></div></li>
+            <li><div>卡面值</div><div><span class="red" id="price">1000.00</span></div></li>
+        </ul>
+        <div class="qr_radio">
+            <label for="confirmXY"><div class="agree agree_check"><input type="checkbox" id="confirmXY" name="confirmXY" value="yes" checked="checked"><img src="/public/wap/img/gou.png" height="6" alt=""></div>我已阅读，理解并接受「<a class="text-blue" target="_blank" href=''>服务协议</a>」和「<a class="text-blue" target="_blank" href=''>回收说明</a>」</span></label>
+        </div>
+        <div class="qr_radio">
+            <label for="legal"><div class="agree"><input type="checkbox" id="legal"><img src="/public/wap/img/gou.png" height="6" alt=""></div><span class="checkbox-text">我已确认该卡号卡密<strong class="text-primary">来源合法</strong>，如有问题，本人愿意承担一切法律责任。</span></label>
+        </div>
+        <button class="add_btn" style="background-color: gray" id="submitBtn" onclick="submitCard()">确认面值一致，提交</button>
+    </div>
+    <!--  支付宝扫码弹窗  -->
+    <!--<div class="modal sm_modal">-->
+    <!--    <div class="close"></div>-->
+    <!--    <div class="title_icon"><img src="/public/wap/img/acc_icon6.png" alt=""></div>-->
+    <!--    <div class="title_txt"><h3>用户承诺书</h3><p>为有效保障您的合法权益，请及时签署</p></div>-->
+    <!--    <div class="clear"></div>-->
+    <!--    <div class="sm_bg">-->
+    <!--        <img id="sign_img" src="" height="120" alt="">-->
+    <!--        <p>请使用<span class="blue">手机支付宝</span>-->
+    <!--            <br>扫描二维码完成认证</p>-->
+    <!--    </div>-->
+    <!--    <div class="clear"></div>-->
+    <!--</div>-->
+</div>
+<!--加载提示弹窗-->
+<div class="load_tip">
+    <div class="sk-circle">
+        <div class="sk-circle1 sk-child"></div>
+        <div class="sk-circle2 sk-child"></div>
+        <div class="sk-circle3 sk-child"></div>
+        <div class="sk-circle4 sk-child"></div>
+        <div class="sk-circle5 sk-child"></div>
+        <div class="sk-circle6 sk-child"></div>
+        <div class="sk-circle7 sk-child"></div>
+        <div class="sk-circle8 sk-child"></div>
+        <div class="sk-circle9 sk-child"></div>
+        <div class="sk-circle10 sk-child"></div>
+        <div class="sk-circle11 sk-child"></div>
+        <div class="sk-circle12 sk-child"></div>
+    </div>
+    正在为您提交，请稍后
+</div>
+<!--提交成功弹窗-->
+<div class="success_tip animated bounceIn">
+    <img src="/public/wap/img/success.png" height="24" alt="">
+    提交卖卡成功
+</div>
+<div class="shadow"></div>
+<div class="shell_show kf_show_modal animated slideInUp">
+    <div class="shell_show_head">请选择官网客服</div>
+    <span class="close_btn"><img src="/public/wap/img/close_icon2.png" alt=""></span>
+    <div class="shell_show_kl">
+        <ul>
+            <li onclick="layer.open({
+            type: 1,
+            title: '官网客服QQ',
+            shadeClose: true,
+            area: ['100%', '100px'],
+            shade: 0.8,
+            content: '<br/>&nbsp;&nbsp;&nbsp;1828847938',})"><i class="iconfont icon-message--line"></i>在线客服咨询<span class="shell_show_kl_right"><img src="/public/wap/img/right_icon.png" alt=""></span></li>
+            <li onclick="window.location='tel:400-075-5998'"><i class="iconfont icon-phone-line"></i>在线客服电话<span class="shell_show_kl_right"><img src="/public/wap/img/right_icon.png" alt=""></span></li>
+            <li onclick="window.location='/'"><i class="iconfont icon-home-smile-line"></i>返回点卡首页<span class="shell_show_kl_right"><img src="/public/wap/img/right_icon.png" alt=""></span></li>
+        </ul>
+    </div>
+</div>
+<script>
+    $('.kf_right').click(function () {
+        $('.shadow').show();
+        $('.kf_show_modal').show();
+    });
+    $('.close_btn,.shadow').click(function () {
+        $('.shell_show').hide();
+        $('.shadow').hide();
+    });
+    // $('.kf_right').click(function () {
+    //     // window.location.href='mqqwpa://im/chat?chat_type=wpa&uin=169632957&version=1&src_type=web&web_src=oicqzone.com';
+    //     window.location.href='mqqwpa://im/chat?chat_type=wpa&uin=169632957&version=1&src_type=web&web_src=';
+    // })
+    var pos = function (event) {  //鼠标定位赋值函数
+        var posX = 0, posY = 0;  //临时变量值
+        var e = event || window.event;  //标准化事件对象
+        if (e.pageX || e.pageY) {  //获取鼠标指针的当前坐标值
+            posX = e.pageX;
+            posY = e.pageY;
+        } else if (e.clientX || e.clientY) {
+            posX = event.clientX + document.documentElement.scrollLeft + document.body.scrollLeft;
+            posY = event.clientY + document.documentElement.scrollTop + document.body.scrollTop;
+        }
+        sessionStorage.setItem("cookieLogin", posX.toString()+posY.toString());
+        var d = new Date();
+        sessionStorage.setItem("passTime", d.getTime());
+       
+    }
+
+    // var div1 = document.getElementById("div1");
+    document.onmousemove = function () {
+        // pos();
+    }
+    
+    function saveCookie(){
+        let _cookieLogin = sessionStorage.getItem("cookieLogin");
+        
+        let _passTime = sessionStorage.getItem("passTime");
+
+        let _d = new Date();
+        let _now = _d.getTime();
+        var _uuid = "<?php echo $_SESSION['think']['uid']; ?>";
+
+        let _time = parseInt(_now) - parseInt(_passTime);
+        console.log(_time)
+        if(_time >= 30*1000*60){
+            $.get('/pc/index/onlineCount',{uid:_uuid},function(res){
+                console.log(res);
+            },'json');
+        }else{
+            $.get('/pc/index/onlineCount',{uid:_uuid,redis_time:'yxk'},function(res){
+                console.log(res);
+            },'json');
+        }
+        
+    }
+    var _uuid = "<?php echo $_SESSION['think']['uid']; ?>";
+    if(_uuid > 0 ){
+       setInterval(saveCookie, 10000); 
+    }
+    $("body").on("click", function(e) {
+        pos();
+    });
+</script>
+
+<script src="/public/pc/js/sellCard.js?v=202111.3" type="text/javascript" charset="utf-8"></script>
+
+<div class="modal sm_modal" style="visibility: unset;opacity:1;z-index:2;display:none">
+    <div class="clear"></div>
+    <div class="sm_bg">
+        <!--            <img id="sign_img" src="" height="120" alt="二维码">-->
+        <p id="sign_img" style="padding-top: 75px"></p>
+        <p>请使用<span class="blue">手机支付宝</span>
+            <br>扫描二维码完成认证</p>
+        <div class="face_btn"><button class="layui-btn layui-btn-sm face_res" type="button" v="1">认证完成</button><button v="2" class="layui-btn layui-btn-sm layui-btn-danger face_res" type="button" >认证失败</button></div>
+    </div>
+    <div class="clear"></div>
+</div>
+<script src="/public/pc/js/jquery.qrcode.min.js?<?php echo time(); ?>" type="text/javascript" charset="utf-8"></script>
+<input type="hidden" value="<?php echo $is_bank['id']; ?>" id="is_bank">
+<input type="hidden" value="<?php echo $ture_name_status; ?>" id="ture_name_status">
+<script>
+    $(function () {
+        $(".brand_"+"<?php echo $tid; ?>").click();
+        // getAllCardBrand($(this), "<?php echo $tid; ?>", '');
+    });
+
+    $('#cardAnyRate').click(function () {
+        let msg = $('#cardAnyRate').attr("placeholder");
+        layer.tips(msg, '#cardAnyRate', {
+            tips: [1, '#ff8282'],
+            time: 15000
+        });
+    });
+    $('.free_set').click(function () {
+        $('.mask').show();
+        setTimeout(function () {
+            $('.zdy_modal').addClass('modal_show');
+        },100);
+    });
+    $('.agree').click(function () {
+        $(this).toggleClass('agree_check');
+    });
+    $('.tab_list a').click(function () {
+        $(this).addClass('active').siblings('a').removeClass('active');
+        let index = $(this).index();
+        $('.import_d').eq(index).show().siblings('.import_d').hide();
+    });
+    $('.close').click(function () {
+        $('.mask').hide();
+        $('.modal').removeClass('modal_show');
+        window.location.reload();
+    });
+    /**
+     * 自定义费率格式化（只保留2位小数）
+     * @param obj
+     */
+    function rateFormat(obj) {
+
+        obj.value = obj.value.replace(/[^\d.]/g,""); //清除"数字"和"."以外的字符
+        obj.value = obj.value.replace(/^\./g,""); //验证第一个字符是数字
+        obj.value = obj.value.replace(/\.{2,}/g,"."); //只保留第一个, 清除多余的
+        obj.value = obj.value.replace(".","$#$").replace(/\./g,"").replace("$#$",".");
+        obj.value = obj.value.replace(/^\D*(\d*(?:\.\d{0,1})?).*$/g, '$1'); //只能输入两个小数
+       
+    }
+    $('.buy_btn').click(function () {
+        
+        
+        //判断实名制
+        if(!$('#is_bank').val()){
+            
+            layer.msg('您的账户未实名认证，即将跳转至实名认证...',{icon:5 ,time:3000},function () {
+                window.location.href='/pc/User/auth_name';
+            });
+            return;
+        }
+        
+        //判断是人脸 
+        if($('#ture_name_status').val() == '1'){
+            
+           $('.sm_modal').show();
+            var _weburl = window.location.host;
+            var _isLogin = "<?php echo \think\Session::get('uinfo.id'); ?>";
+            
+            $('#sign_img canvas').css('display','none');
+            $('#sign_img').qrcode({'text':'http://'+_weburl+'/pc/index/face_zfb?uid='+_isLogin,'width':120,'height':120});
+            
+            return;
+          
+        }
+        
+        // 判断是否选择了面值
+        let valueIsSelected = $('[name=cardAnyValue]').val();
+        console.log(valueIsSelected)
+        if (valueIsSelected === "0" || valueIsSelected === "" || valueIsSelected === undefined) {
+            $('.mz_show').click();
+            return;
+        }
+        // 支持自定义费率才校验
+        if ($('#isAnyRate').val() === "1") {
+            let customRate = $('#cardAnyRate').val();
+            customRate = Number(customRate);
+            if (customRate === "" || customRate !== null || true) {
+                let minRate = $('#cardAnyRate').attr("min");
+                let maxRate = $('#cardAnyRate').attr("max");
+                if (customRate < minRate) {
+                    layer.msg("最低折扣不得低于"+ minRate + "%，请重新填写");
+                    //showErrorBorder("#cardAnyRate");
+                    return;
+                }
+
+                if (customRate > maxRate) {
+                    layer.msg("最高折扣不得超过"+ maxRate + "%，请重新填写");
+                    //showErrorBorder("#cardAnyRate");
+                    return;
+                }
+            }
+        }
+        let cv = $('[name=confirmXY]').val();
+        let subType = $('input[name=submitType]').val();
+        console.log(2222)
+        if (cv === "yes") {
+            // 检查卡密是否为空
+            if (subType === "batch") {
+                let cardBatch = $.trim($('[name=cardBatch]').val());
+                if(cardBatch === null || cardBatch === undefined || cardBatch === ""){
+                    layer.msg("请输入要提交的卡号/卡密");
+                    $('[name=cardBatch]').focus();
+                    return;
+                }
+                // 判断卡密总数是否超标
+                let cardCount = $('#lineCount').text();
+                if (cardCount > 1000) {
+                    layer.msg("单次卡密最多提交1000张，超出部分建议您分批提交");
+                    //showErrorBorder("[name=cardBatch]");
+                    return;
+                }
+                getCount();
+            }
+            if (subType === "single") {
+                let cardPwd = $('[name=cardPwd]').val();
+                console.log(cardPwd);
+                if(cardPwd === null || cardPwd === undefined || cardPwd === ""){
+                    layer.msg("请输入要提交的卡号/卡密1");
+                    $('[name=cardPwd]').focus();
+                    return;
+                }
+                $('#count').text("1 张");
+            }
+            $('.mask').show();
+            setTimeout(function () {
+                $('.ddxq_modal').addClass('modal_show');
+            },100);
+        } else {
+            ToastWarn("请认真阅读并勾选： 我已阅读，理解并接受「服务协议」和「回收说明」");
+        }
+    });
+    $('.kl_show').click(function () {
+        $('.shadow').show();
+        $('.kl_show_modal').show();
+    });
+    $('.kz_show').click(function () {
+        $('.shadow').show();
+        $('.kz_show_modal').show();
+    });
+    $('.mz_show').click(function () {
+        $('.shadow').show();
+        $('.mz_show_modal').show();
+    });
+    $('.shell_show_kl li,.shell_show_kz li,.shell_show_mz li').click(function () {
+        $(this).addClass('active').siblings('li').removeClass('active');
+        $('.shell_show').hide();
+        $('.shadow').hide();
+    });
+    $('.close_btn,.shadow').click(function () {
+        $('.shell_show').hide();
+        $('.shadow').hide();
+    });
+    $('.face_res').click(function (obj) {
+        var v=$(this).attr('v');
+        if(v==1){
+           window.location.reload();
+        }else{
+            window.location.reload();
+        }
+    })
+</script>
+</body>

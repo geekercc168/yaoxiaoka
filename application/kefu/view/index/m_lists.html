@@ -1,0 +1,136 @@
+{include file='common/header' /}
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1786378_02usjpdi4hev.css">
+<div class="main_top">提现记录
+    <a href="javascript:history.back(-1);"  class="back"><img src="/public/wap/img/left_icon.png" alt=""></a>
+</div>
+
+<body style='background: white;padding: 2px'>
+
+<!-- 功能栏 -->
+<form class="layui-form" id='form1' style='float: left;'>
+    <div class="demoTable" style='  margin-left: 10px;'>
+<!--        <div class="layui-inline" style="width: 100%;margin-bottom: 5px">-->
+<!--            <input type="text" class="layui-input" id="test1" placeholder="{:date('Y-m-d',time())} 00:00:00 - ">-->
+<!--        </div>-->
+        <div class="layui-inline" style="margin-bottom: 5px">
+
+            <div class="layui-input-inline">
+                <input type="text" class="layui-input" id="startTime" value="{:date('Y-m-d',time())} 00:00:00">
+            </div>
+                ~
+            <div class="layui-input-inline">
+                <input type="text" class="layui-input" id="endTime" value="">
+            </div>
+        </div>
+        <div class="layui-inline">
+            <select class="selresult" id='selresult' lay-search="">
+                <option value="">状态</option>
+                <option value="1">成功</option>
+                <option value="2">失败</option>
+                <option value="0">处理中</option>
+                <option value="3">其他</option>
+            </select>
+        </div>
+        <button class='search layui-btn' type="button">搜索</button>
+    </div>
+
+</form>
+
+<div style='clear:both'></div>
+<table class="layui-hide" id="LAY_table_user" lay-filter="LAY_table_user"></table>
+
+<script type="text/html" id="caozuo">
+    <!-- 这里的 checked 的状态只是演示 -->
+    {{# if (d.status == 0) { }}
+    <a class="layui-btn layui-btn-primary layui-btn-xs" lay-event="del">删除</a>
+    {{# } }}
+</script>
+<!-- 注意：如果你直接复制所有代码到本地，上述js路径需要改成你本地的 -->
+<script type="text/html" id="change">
+    <input type="checkbox" name="status" value="{{d.id}}" lay-skin="switch" lay-text="正常|隐藏" lay-filter="change" {{
+           d.status==1 ? 'checked' : '' }}>
+</script>
+<script type="text/html" id="time1">
+    {{layui.util.toDateString(d.register_time*1000, 'yyyy-MM-dd HH:mm:ss')}}
+</script>
+<script type="text/html" id="time2">
+    {{layui.util.toDateString(d.last_login_time*1000, 'yyyy-MM-dd HH:mm:ss')}}
+</script>
+<script>
+    layui.use(['table', 'form', 'laydate'], function () {
+        var table = layui.table, form = layui.form
+        var laydate = layui.laydate;
+        //日期范围
+        // 选择日期
+        laydate.render({
+            elem: '#startTime', //指定元素
+            type: 'datetime',
+            theme: '#5978fb',
+            done: function (value, date, endDate) {
+                var startDate = new Date(value).getTime();
+                var endTime = new Date($('#endTime').val()).getTime();
+                if (endTime < startDate) {
+                    $('#startTime').val($('#endTime').val());
+                }
+            }
+        });
+        laydate.render({
+            elem: '#endTime', //指定元素
+            theme: '#5978fb',
+            type: 'datetime',
+            done: function (value, date, endDate) {
+                var startDate = new Date($('#startTime').val()).getTime();
+                var endTime = new Date(value).getTime();
+                if (endTime < startDate) {
+                    $('#endTime').val($('#startTime').val());
+                }
+            }
+        });
+        //方法级渲染
+        table.render({
+            elem: '#LAY_table_user'
+            , url: "/kefu/Index/m_lists"
+            ,totalRow:true
+            , cols: [[
+                // {checkbox: true, fixed: true}
+                {field: '', title: '用户ID',width:60, templet: function (d) {
+                        return '<font>' + d.uid + '【'+d.username+'】</font>';}}
+                //, {field: 'bank_r', title: '提现'}
+                , {field: 'create_time', title: '申请时间'}
+                , {field: 'cash', title: '金额',totalRow:true}
+                // , {field: 'ext', title: '描述'}
+                , {field: 'status', title: '状态',width: 60, templet: function (d) {
+                        var colors = 'blue';
+                        if (d.status == 1) {
+                            colors = 'green';
+                        }else{
+                            colors = 'red';
+                        }
+                        return '<font color="' + colors + '">' + d.status_txt + '</font>';
+                    }
+                }
+            ]]
+            , id: 'testReload'
+            , page: true
+            , limit: 20
+            , done: function (res,curr,count) {
+                tdTitle();
+            }
+        })
+        $('.search').on('click', function () {
+            //执行重载
+            table.reload('testReload', {
+                page: {
+                    curr: 1 //重新从第 1 页开始
+                }
+                , where: {
+                    search_time: $('#startTime').val()+' - '+$('#endTime').val(),
+                    selresult: $('#selresult').val(),
+                }
+            });
+        });
+    });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,36 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+
+</head>
+
+<body>
+<div style="font-weight:bold;color: red;text-align: center">
+    有新的提现申请</br>
+    请审核！
+    <audio autoplay="autoplay"><source src="/public/05.mp3" type="audio/wav"/>
+        <embed width="0" height="0" src="/public/05.mp3"/>
+        <source src="/public/05.mp3" type="audio/mpeg"/></audio>
+</div>
+
+</body>
+
+<!--
+
+
+				//这里参考了以下两个站点的介绍
+				//http://www.w3school.com.cn/html/html_audio.asp
+				//http://www.zhanxin.info/development/2013-05-17-html5-audio.html
+				if($.browser.msie && $.browser.version=='8.0'){
+				//本来这里用的是<bgsound src="system.wav"/>,结果IE8不播放声音,于是换成了embed
+				$('#newMessageDIV').html('<embed src="../resource/img/admin/05.mp3"/>');
+				}else{
+				//IE9+,Firefox,Chrome均支持<audio/>
+				$('#newMessageDIV').html('<audio autoplay="autoplay"><source src="../resource/img/admin/05.mp3"'
+				+ 'type="audio/wav"/><source src="../resource/img/admin/05.mp3" type="audio/mpeg"/></audio>');
+				}
+
+ -->
+
+</html>
